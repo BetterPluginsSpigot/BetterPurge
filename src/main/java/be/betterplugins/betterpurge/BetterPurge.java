@@ -48,8 +48,8 @@ public class BetterPurge extends JavaPlugin
         // start a Purge timer
         PurgeTimer purgetimer = new PurgeTimer(new PurgeStatus(), purgeConfig, messenger);
 
-        // check the timing
-        purgetimer.checkTimings();
+        // run every mochnute
+        purgetimer.runTaskTimer(this, 0L, 1200L);
     }
 
     // run this code when plugin should be disabled

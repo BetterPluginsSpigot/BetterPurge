@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import static org.bukkit.Bukkit.getServer;
  * decides to start or end the purge
  *
  */
-public class PurgeTimer
+public class PurgeTimer extends BukkitRunnable
 {
 
     private final PurgeStatus purgeStatus;
@@ -43,11 +44,11 @@ public class PurgeTimer
         this.purgeStatus = purgeStatus;
     }
 
-
     /**
-     * checks the times
-     **/
-    public void checkTimings()
+     * Handles the purge state based on time
+     */
+    @Override
+    public void run()
     {
         // Get the current time
         PurgeTime timeNow = new PurgeTime( LocalTime.now() );
@@ -62,15 +63,28 @@ public class PurgeTimer
         getServer().getConsoleSender().sendMessage("PURGE END IS: "+ purgeEnd );
 
         // Enable the purge when in the time slot
-        if ( purgeStatus.getState() == PurgeState.DISABLED && timeNow.compareTo( purgeStart ) >= 0 && timeNow.compareTo( purgeEnd ) <= 0)
+        PurgeState state = purgeStatus.getState();
+        switch (state)
         {
-            String announcementMessage = ChatColor.RED + "This is the Emergency Broadcast System announcing the commencement of the annual purge. At the siren, all emergency services will be suspended for <duration> minutes. Your government thanks you for your participation.";
-            List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-            messenger.sendMessage(
-                players,
-                announcementMessage,
-                new MsgEntry("<duration>", purgeConfiguration.getDuration())
-            );
+            case DISABLED:
+                // Check if the purge should enable
+                if (timeNow.compareTo( purgeStart ) >= 0 && timeNow.compareTo( purgeEnd ) <= 0)
+                {
+                    String announcementMessage = ChatColor.RED + "This is the Emergency Broadcast System announcing the commencement of the annual purge. At the siren, all emergency services will be suspended for <duration> minutes. Your government thanks you for your participation.";
+                    List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+                    messenger.sendMessage(
+                            players,
+                            announcementMessage,
+                            new MsgEntry("<duration>", purgeConfiguration.getDuration())
+                    );
+                }
+                break;
+            case COUNTDOWN:
+                // Start counting down with a separate runnable
+                break;
+            case ACTIVE:
+                // Check if the purge should be disabled
+                break;
         }
     }
 

@@ -39,7 +39,7 @@ public class PurgeTime implements Comparable<PurgeTime> {
     public PurgeTime addMinutes( int minutes )
     {
         int addedMinutes = getMinute() + minutes;
-        int newHours = addedMinutes / 60;
+        int newHours = getHour() + addedMinutes / 60;
         int newMinutes = addedMinutes % 60;
 
         return new PurgeTime(newHours, newMinutes);
