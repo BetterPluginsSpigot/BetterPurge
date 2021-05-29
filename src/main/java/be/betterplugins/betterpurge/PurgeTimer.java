@@ -1,5 +1,11 @@
 package be.betterplugins.betterpurge;
 
+import be.betterplugins.betterpurge.messenger.Messenger;
+import be.betterplugins.betterpurge.messenger.MsgEntry;
+import be.betterplugins.betterpurge.model.PurgeConfiguration;
+import be.betterplugins.betterpurge.model.PurgeState;
+import be.betterplugins.betterpurge.model.PurgeStatus;
+import be.betterplugins.betterpurge.model.PurgeTime;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -7,6 +13,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.bukkit.Bukkit.getServer;
 
@@ -21,59 +29,49 @@ import static org.bukkit.Bukkit.getServer;
 public class PurgeTimer
 {
 
-    private final YamlConfiguration config;
+    private final PurgeStatus purgeStatus;
+    private final PurgeConfiguration purgeConfiguration;
+    private final Messenger messenger;
 
     /**
      * @param config gives the configuration file as parameter
      **/
-
-    public PurgeTimer(YamlConfiguration config)
+    public PurgeTimer(PurgeStatus purgeStatus, PurgeConfiguration config, Messenger messenger)
     {
-        this.config = config;
+        this.purgeConfiguration = config;
+        this.messenger = messenger;
+        this.purgeStatus = purgeStatus;
     }
+
 
     /**
      * checks the times
      **/
     public void checkTimings()
     {
-        // get the time now
-        String timeNow = getTimeNow();
+        // Get the current time
+        PurgeTime timeNow = new PurgeTime( LocalTime.now() );
+
+        // Get the purge starting time
+        PurgeTime purgeStart = purgeConfiguration.getStartTime();
+        PurgeTime purgeEnd = purgeStart.addMinutes( purgeConfiguration.getDuration() );
 
         // get the time of the config file
-        String timeConfig = config.getString("start");
         getServer().getConsoleSender().sendMessage("TIME NOW IS: "+timeNow);
-        getServer().getConsoleSender().sendMessage("TIME CONFIG IS: "+timeConfig);
+        getServer().getConsoleSender().sendMessage("PURGE START IS: "+ purgeStart );
+        getServer().getConsoleSender().sendMessage("PURGE END IS: "+ purgeEnd );
 
-        // start of the purge when timings are the same
-        if(timeConfig.equals(timeNow))
+        // Enable the purge when in the time slot
+        if ( purgeStatus.getState() == PurgeState.DISABLED && timeNow.compareTo( purgeStart ) >= 0 && timeNow.compareTo( purgeEnd ) <= 0)
         {
-            String announcementMessage = "This is the Emergency Broadcast System announcing the commencement of the annual purge. At the siren, all emergency services will be suspended for "+config.getInt("duration")+" hours. Your government thanks you for your participation.";
-
-            // send announcement message to all players on server
-            for(Player p : Bukkit.getOnlinePlayers()) {
-
-                // send message to the player
-                p.sendMessage(ChatColor.RED +announcementMessage);
-            }
-
+            String announcementMessage = ChatColor.RED + "This is the Emergency Broadcast System announcing the commencement of the annual purge. At the siren, all emergency services will be suspended for <duration> minutes. Your government thanks you for your participation.";
+            List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+            messenger.sendMessage(
+                players,
+                announcementMessage,
+                new MsgEntry("<duration>", purgeConfiguration.getDuration())
+            );
         }
-
-    }
-
-    /**
-     * @return time at moment of function (in String format)
-     **/
-    public String getTimeNow()
-    {
-        // get current time in LocalTime format
-        LocalTime localTimeNow = LocalTime.now();
-
-        // convert to String, hour and minute format
-        String timeNow = localTimeNow.getHour() +""+ localTimeNow.getMinute();
-
-        return timeNow;
-
     }
 
 }

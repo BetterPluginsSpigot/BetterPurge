@@ -1,13 +1,15 @@
 package be.betterplugins.betterpurge;
 
-import be.dezijwegel.betteryaml.BetterYaml;
+import be.betterplugins.betterpurge.messenger.Messenger;
+import be.betterplugins.betterpurge.model.PurgeConfiguration;
+import be.betterplugins.betterpurge.model.PurgeStatus;
 import be.dezijwegel.betteryaml.OptionalBetterYaml;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Optional;
 
 /**
@@ -37,11 +39,14 @@ public class BetterPurge extends JavaPlugin
 
         YamlConfiguration config = optionalConfig.get();
 
+        PurgeConfiguration purgeConfig = new PurgeConfiguration(config);
+        Messenger messenger = new Messenger(new HashMap<>(), true);
+
         // display a plugin enabled message
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "BetterPurge plugin enabled");
 
         // start a Purge timer
-        PurgeTimer purgetimer = new PurgeTimer(config);
+        PurgeTimer purgetimer = new PurgeTimer(new PurgeStatus(), purgeConfig, messenger);
 
         // check the timing
         purgetimer.checkTimings();

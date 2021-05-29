@@ -6,12 +6,12 @@
 #    |____/ \___|\__|\__\___|_|  |_|    \__,_|_|  \__, |\___|
 #                                                  __/ |
 #                                                 |___/
-# BetterPurge V${project.version}
+# BetterPurge v${project.version}
 
-# start of the Purge
+# The starting time of the purge
 start : {start}
 
-# duration of the purge
+# The duration of the purge in minutes
 duration : {duration}
 
 
