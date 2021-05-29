@@ -15,6 +15,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <!-- SPIGOT -->
@@ -23,6 +30,13 @@
             <artifactId>spigot-api</artifactId>
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- BetterYAML -->
+        <dependency>
+            <groupId>com.github.BetterPluginsSpigot</groupId>
+            <artifactId>BetterYaml</artifactId>
+            <version>1.0.5</version>
         </dependency>
 
     </dependencies>
@@ -41,7 +55,7 @@
             </resource>
         </resources>
 
-        <!-- Shade bStats into BetterNavigation -->
+        <!-- Shade bStats into BetterPurge -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -50,7 +64,7 @@
                 <configuration>
                     <relocations>
                         <relocation>
-                            <pattern>org.bstats</pattern>
+                            <pattern>be.dezijwegel.betteryaml</pattern>
                             <shadedPattern>be.betterplugins.betterpurge</shadedPattern>
                         </relocation>
                     </relocations>
