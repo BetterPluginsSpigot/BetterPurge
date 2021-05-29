@@ -1,0 +1,5 @@
+name: BetterPurge
+main: be.betterplugins.betterpurge.BetterPurge
+version: ${project.version}
+author: Thomas Verschoor
+api-version: 1.16
