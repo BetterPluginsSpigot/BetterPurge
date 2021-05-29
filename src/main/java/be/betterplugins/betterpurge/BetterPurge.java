@@ -51,6 +51,7 @@ public class BetterPurge extends JavaPlugin
     @Override
     public void onDisable()
     {
+
         // display a plugin disabled message
         getServer().getConsoleSender().sendMessage(ChatColor.RED + "BetterPurge plugin disabled");
 

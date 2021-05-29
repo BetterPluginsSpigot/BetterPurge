@@ -1,7 +1,10 @@
 package be.betterplugins.betterpurge;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.time.LocalTime;
 
@@ -42,6 +45,19 @@ public class PurgeTimer
         getServer().getConsoleSender().sendMessage("TIME NOW IS: "+timeNow);
         getServer().getConsoleSender().sendMessage("TIME CONFIG IS: "+timeConfig);
 
+        // start of the purge when timings are the same
+        if(timeConfig.equals(timeNow))
+        {
+            String announcementMessage = "This is the Emergency Broadcast System announcing the commencement of the annual purge. At the siren, all emergency services will be suspended for "+config.getInt("duration")+" hours. Your government thanks you for your participation.";
+
+            // send announcement message to all players on server
+            for(Player p : Bukkit.getOnlinePlayers()) {
+
+                // send message to the player
+                p.sendMessage(ChatColor.RED +announcementMessage);
+            }
+
+        }
 
     }
 
@@ -59,36 +75,6 @@ public class PurgeTimer
         return timeNow;
 
     }
-
-    /*
-    public Dateexample()
-    {
-
-        SimpleDateFormat objSDF = new SimpleDateFormat("dd-mm-yyyy");
-        Date dt_1 = objSDF.parse("20-08-1981");
-        Date dt_2 = objSDF.parse("12-10-2012");
-
-        System.out.println("Date1 : " + objSDF.format(dt_1));
-        System.out.println("Date2 : " + objSDF.format(dt_2));
-
-        if (dt_1.compareTo(dt_2) > 0) {
-            System.out.println("Date 1 occurs after Date 2");
-        } // compareTo method returns the value greater than 0 if this Date is after the Date argument.
-        else if (dt_1.compareTo(dt_2) < 0) {
-            System.out.println("Date 1 occurs before Date 2");
-        } // compareTo method returns the value less than 0 if this Date is before the Date argument;
-        else if (dt_1.compareTo(dt_2) == 0) {
-            System.out.println("Both are same dates");
-        } // compareTo method returns the value 0 if the argument Date is equal to the second Date;
-        else {
-            System.out.println("You seem to be a time traveller !!");
-        }
-
-    }
-
-     */
-
-
 
 }
 
