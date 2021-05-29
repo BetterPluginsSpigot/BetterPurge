@@ -1,11 +1,14 @@
 package be.betterplugins.betterpurge;
 
 import be.dezijwegel.betteryaml.BetterYaml;
+import be.dezijwegel.betteryaml.OptionalBetterYaml;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  *
@@ -31,6 +34,8 @@ public class BetterPurge extends JavaPlugin
             this.getPluginLoader().disablePlugin(this);
             return;
         }
+
+        YamlConfiguration config = optionalConfig.get();
 
         // display a plugin enabled message
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "BetterPurge plugin enabled");
