@@ -1,5 +1,6 @@
 package be.betterplugins.betterpurge;
 
+import be.betterplugins.betterpurge.listener.ContainerListener;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.model.PurgeConfiguration;
 import be.betterplugins.betterpurge.model.PurgeStatus;
@@ -39,6 +40,7 @@ public class BetterPurge extends JavaPlugin
 
         YamlConfiguration config = optionalConfig.get();
 
+        PurgeStatus purgeStatus = new PurgeStatus();
         PurgeConfiguration purgeConfig = new PurgeConfiguration(config);
         Messenger messenger = new Messenger(new HashMap<>(), true);
 
@@ -46,10 +48,13 @@ public class BetterPurge extends JavaPlugin
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "BetterPurge plugin enabled");
 
         // start a Purge timer
-        PurgeTimer purgetimer = new PurgeTimer(new PurgeStatus(), purgeConfig, messenger);
+        PurgeTimer purgetimer = new PurgeTimer(purgeStatus, purgeConfig, messenger);
 
         // run every mochnute
         purgetimer.runTaskTimer(this, 0L, 1200L);
+
+        ContainerListener containerListener = new ContainerListener(purgeStatus);
+        Bukkit.getServer().getPluginManager().registerEvents(containerListener, this );
     }
 
     // run this code when plugin should be disabled
