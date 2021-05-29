@@ -21,17 +21,25 @@ public class BetterPurge extends JavaPlugin
     public void onEnable()
     {
         // BetterYaml-config implementation
-        YamlConfiguration config = new YamlConfiguration();
-        try {
-            BetterYaml betterYaml = new BetterYaml("config.yml", this, true);
-            config = betterYaml.getYamlConfiguration();
-        } catch (IOException e) {
-            e.printStackTrace();
+        OptionalBetterYaml betterYaml = new OptionalBetterYaml("config.yml", this, true);
+        Optional<YamlConfiguration> optionalConfig = betterYaml.getYamlConfiguration();
+
+        // Disable the plugin & prevent further code execution if a config error happens (this should never happen)
+        if (!optionalConfig.isPresent())
+        {
+            Bukkit.getLogger().severe(ChatColor.RED + "BetterPurge cannot enable due to a configuration error, please contact the developer");
+            this.getPluginLoader().disablePlugin(this);
+            return;
         }
 
         // display a plugin enabled message
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "BetterPurge plugin enabled");
 
+        // start a Purge timer
+        PurgeTimer purgetimer = new PurgeTimer(config);
+
+        // check the timing
+        purgetimer.checkTimings();
     }
 
     // run this code when plugin should be disabled
