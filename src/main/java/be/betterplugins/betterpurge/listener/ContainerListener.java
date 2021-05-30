@@ -8,19 +8,23 @@ import be.betterplugins.betterpurge.model.PurgeState;
 import be.betterplugins.betterpurge.model.PurgeStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class ContainerListener implements Listener {
@@ -143,6 +147,37 @@ public class ContainerListener implements Listener {
         else
         {
             this.logger.log(Level.FINE, "An inventory closed that was not found. Cannot update contents");
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event)
+    {
+        Block block = event.getBlock();
+        if(block.getState() instanceof Container)
+        {
+            Container container = (Container) block.getState();
+            Location invLocation = container.getInventory().getLocation();
+            InventorySync invSync = this.inventoryMap.removeBackward( invLocation );
+            if (invSync != null)
+            {
+                logger.log(Level.FINER, "An opened inventory was broken! Handling menu closing and state");
+
+                for (HumanEntity viewer : invSync.getOriginal().getViewers())
+                    viewer.closeInventory();
+                for (HumanEntity viewer : invSync.getCopy().getViewers())
+                    viewer.closeInventory();
+
+                event.setDropItems(false);
+                for (ItemStack item : invSync.getCopy().getContents())
+                {
+                    if (item != null)
+                    {
+                        assert invLocation != null;
+                        invLocation.getWorld().dropItem(invLocation, item);
+                    }
+                }
+            }
         }
     }
 
