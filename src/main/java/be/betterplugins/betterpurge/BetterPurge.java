@@ -49,9 +49,6 @@ public class BetterPurge extends JavaPlugin
         PurgeConfiguration purgeConfig = new PurgeConfiguration(config);
         Messenger messenger = new Messenger(new HashMap<>(), logger, true);
 
-        // display a plugin enabled message
-        getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "BetterPurge plugin enabled");
-
         // start a Purge timer
         PurgeTimer purgetimer = new PurgeTimer(purgeStatus, purgeConfig, messenger);
 
@@ -66,10 +63,7 @@ public class BetterPurge extends JavaPlugin
     @Override
     public void onDisable()
     {
-
-        // display a plugin disabled message
-        getServer().getConsoleSender().sendMessage(ChatColor.RED + "BetterPurge plugin disabled");
-
+        
     }
 
 

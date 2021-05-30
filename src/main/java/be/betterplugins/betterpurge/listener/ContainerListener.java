@@ -114,6 +114,7 @@ public class ContainerListener implements Listener {
         this.inventoryMap.put(uuid, location, invSync);
 
         // Open the copied inventory
+        event.setCancelled(true);
         player.openInventory( invSync.getCopy() );
     }
 
