@@ -45,7 +45,6 @@ public class ContainerListener implements Listener {
 //        if (purgeStatus.getState() != PurgeState.ACTIVE)
 //            return;
 
-
         HumanEntity player = event.getPlayer();
         UUID uuid = player.getUniqueId();
         Inventory inventory = event.getInventory();
@@ -58,69 +57,60 @@ public class ContainerListener implements Listener {
         if (this.activePlayers.contains( uuid ))
             return;
 
-//        // No action required if no plugin stops this event
-//        if (!event.isCancelled())
-//            return;
+        // Make sure this player will not end up in an infinite loop of calling this event
+        this.activePlayers.add( uuid );
 
         // Open the 'dummy' inventory if someone else is busy in this inventory
         // This syncs the inventory automatically
+        InventorySync invSync;
         if (openInventories.containsForward( inventory ))
         {
-            player.sendMessage("OPEN existing INV");
-            this.activePlayers.add( uuid );
-            Inventory copy = openInventories.getForward( inventory ).getCopy();
-            event.getPlayer().openInventory( copy );
+            player.sendMessage("VIEWING OPENED INV");
+
+            invSync = openInventories.getForward( inventory );
         }
         else
         {
-
-            // Someone breaks into this container: Close all viewers of the original chest to prevent duplication issues
-//        for (HumanEntity viewer : inventory.getViewers())
-//        {
-//            player.sendMessage("FORCE CLOSE");
-//            viewer.closeInventory();
-//        }
-
+            // TODO: Remove all viewers
             player.sendMessage("OPEN NEW INV");
 
-            InventorySync invSync = new InventorySync(player, inventory);
+            invSync = new InventorySync(player, inventory);
             this.openInventories.put( inventory, invSync.getCopy(), invSync );
-            this.activePlayers.add( uuid );
-            player.openInventory( invSync.getCopy() );
+
         }
+
+        // Add a viewer and open the copied inventory
+        invSync.addViewer();
+        player.openInventory( invSync.getCopy() );
     }
 
-//    @EventHandler
-//    public void onItemInteract(InventoryClickEvent event)
-//    {
-//        event.getWhoClicked().sendMessage("CLICK");
-//        UUID uuid = event.getWhoClicked().getUniqueId();
-//        if ( activePlayers.containsKey( uuid ))
-//            activePlayers.get( uuid ).syncToOriginal();
-//    }
-//
-//    @EventHandler
-//    public void onItemDrag(InventoryDragEvent event)
-//    {
-//        event.getWhoClicked().sendMessage("DRAG");
-//        UUID uuid = event.getWhoClicked().getUniqueId();
-//        if ( activePlayers.containsKey( uuid ))
-//            activePlayers.get( uuid ).syncToOriginal();
-//    }
 
     @EventHandler
     public void onChestClose(InventoryCloseEvent event)
     {
+        // Mark player as not having opened an inventory
         this.activePlayers.remove( event.getPlayer().getUniqueId() );
 
-        event.getPlayer().sendMessage("Close event");
-
         Inventory inv = event.getInventory();
-        // No one is watching anymore, remove from the map + update the original inventory
-        if (this.openInventories.containsBackward( inv ) && inv.getViewers().size() < 2 )
+        InventorySync invSync;
+
+        // Get the relevant InventorySync object, or return
+        if(this.openInventories.containsBackward( inv ))
+            invSync = this.openInventories.getBackward( inv );
+        else if (this.openInventories.containsForward( inv ))
+            invSync = this.openInventories.getForward( inv );
+        else return;
+
+        invSync.removeViewer();
+        if (!invSync.hasViewers())
         {
             event.getPlayer().sendMessage("Remove fro mmap");
-            this.openInventories.removeBackward( inv ).syncToOriginal();
+            invSync.syncToOriginal();
+
+            if (this.openInventories.containsBackward( inv ))
+                this.openInventories.removeBackward( inv );
+            else
+                this.openInventories.removeForward( inv );
         }
     }
 
