@@ -6,7 +6,8 @@ public class PurgeStatus {
 
     public PurgeStatus()
     {
-        this.state = PurgeState.DISABLED;
+//        this.state = PurgeState.DISABLED;
+        this.state = PurgeState.ACTIVE;
     }
 
     public void setState(PurgeState state)

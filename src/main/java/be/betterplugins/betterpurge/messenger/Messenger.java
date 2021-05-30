@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class Messenger {
 
@@ -19,14 +20,17 @@ public class Messenger {
     private final String shortPrefix = "&9[BP] &3";
     private final String longPrefix = "&9[BetterPurge] &3";
 
+    private final BPLogger logger;
+
     /**
      * Creates a messenger for player output
      * @param messages the messages from lang.yml, mapping path to message
      * @param doShortenPrefix whether to use the short prefix (true) or the long prefix (false)
      */
-    public Messenger(Map<String, String> messages, boolean doShortenPrefix)
+    public Messenger(Map<String, String> messages, BPLogger logger, boolean doShortenPrefix)
     {
         this.messages = messages;
+        this.logger = logger;
         this.doShortenPrefix = doShortenPrefix;
     }
 
@@ -54,9 +58,15 @@ public class Messenger {
         // Get the message from lang.yml OR if non existent, get the raw message
         String message = messages.getOrDefault(messageID, messageID);
 
+        if (message.equals( messageID ))
+        {
+            logger.log(Level.INFO, "Missing language option found: " + messageID + ". Consider adding it to the language file");
+        }
+
         // Early return if the message is disabled
         if (message.equals("") || message.equalsIgnoreCase("ignored"))
             return "";
+
         // Perform variable replacements
         for (MsgEntry entry : replacements)
         {

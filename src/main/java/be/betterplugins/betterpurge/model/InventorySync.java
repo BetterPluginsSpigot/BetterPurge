@@ -12,11 +12,8 @@ public class InventorySync
     private final Inventory original;
     private final Inventory copy;
 
-    private int numViewers;
-
     public InventorySync(HumanEntity player, Inventory original)
     {
-        this.numViewers = 0;
         this.original = original;
         int originalSize = original.getSize();
         int size = originalSize% 9 == 0 ? originalSize : originalSize + (9 - (originalSize % 9));
@@ -29,21 +26,6 @@ public class InventorySync
         for (int slot = 0; slot < copy.getSize(); slot++) {
             this.original.setItem(slot, this.copy.getItem(slot));
         }
-    }
-
-    public boolean hasViewers()
-    {
-        return this.numViewers != 0;
-    }
-
-    public void addViewer()
-    {
-        this.numViewers++;
-    }
-
-    public void removeViewer()
-    {
-        this.numViewers--;
     }
 
     public Inventory getOriginal()

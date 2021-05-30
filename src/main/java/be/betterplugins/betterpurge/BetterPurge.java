@@ -1,6 +1,7 @@
 package be.betterplugins.betterpurge;
 
 import be.betterplugins.betterpurge.listener.ContainerListener;
+import be.betterplugins.betterpurge.messenger.BPLogger;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.model.PurgeConfiguration;
 import be.betterplugins.betterpurge.model.PurgeStatus;
@@ -12,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.logging.Level;
 
 /**
  *
@@ -26,6 +28,9 @@ public class BetterPurge extends JavaPlugin
     @Override
     public void onEnable()
     {
+
+        BPLogger logger = new BPLogger(Level.ALL);
+
         // BetterYaml-config implementation
         OptionalBetterYaml betterYaml = new OptionalBetterYaml("config.yml", this, true);
         Optional<YamlConfiguration> optionalConfig = betterYaml.getYamlConfiguration();
@@ -42,7 +47,7 @@ public class BetterPurge extends JavaPlugin
 
         PurgeStatus purgeStatus = new PurgeStatus();
         PurgeConfiguration purgeConfig = new PurgeConfiguration(config);
-        Messenger messenger = new Messenger(new HashMap<>(), true);
+        Messenger messenger = new Messenger(new HashMap<>(), logger, true);
 
         // display a plugin enabled message
         getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "BetterPurge plugin enabled");
@@ -53,7 +58,7 @@ public class BetterPurge extends JavaPlugin
         // run every mochnute
         purgetimer.runTaskTimer(this, 0L, 1200L);
 
-        ContainerListener containerListener = new ContainerListener(purgeStatus);
+        ContainerListener containerListener = new ContainerListener(purgeStatus, messenger, logger);
         Bukkit.getServer().getPluginManager().registerEvents(containerListener, this );
     }
 

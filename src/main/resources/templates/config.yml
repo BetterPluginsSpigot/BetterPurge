@@ -8,14 +8,15 @@
 #                                                 |___/
 # BetterPurge v${project.version}
 
-# The starting time of the purge
+# The starting time of the purge, in the format HH:MM
 start : {start}
 
 # The duration of the purge in minutes
+# Eg. the purge is active for one hour and 14 minutes: set this to 74
 duration : {duration}
 
+# Whether to enable pvp during the purge
+enable_pvp: {enable_pvp}
 
-
-
-
-
+# Allow container access during the purge, this bypasses ALL chest protection plugins (this includes worldguard, chestshops, lockette, ...)
+enable_chests: {enable_chests}

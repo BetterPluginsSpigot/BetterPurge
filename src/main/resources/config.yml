@@ -1,2 +1,4 @@
 start: "12:51"
 duration: 12
+enable_pvp: true
+enable_chests: true
