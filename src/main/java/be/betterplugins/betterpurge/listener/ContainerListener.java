@@ -8,13 +8,16 @@ import be.betterplugins.betterpurge.model.PurgeState;
 import be.betterplugins.betterpurge.model.PurgeStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -45,6 +48,7 @@ public class ContainerListener implements Listener {
             add(InventoryType.BREWING);
             add(InventoryType.DISPENSER);
             add(InventoryType.DROPPER);
+            add(InventoryType.HOPPER);
             add(InventoryType.SHULKER_BOX);
         }};
     }
@@ -85,7 +89,7 @@ public class ContainerListener implements Listener {
         // Only consider allowed containers
         if (!allowedContainers.contains( inventory.getType() ))
         {
-            this.logger.log(Level.FINEST, "Player '" + player.getName() + "' opened an inventory that is not considered by BetterPurge");
+            this.logger.log(Level.FINEST, "Player '" + player.getName() + "' tried to open an inventory that is not considered by BetterPurge");
             return;
         }
 
@@ -108,7 +112,7 @@ public class ContainerListener implements Listener {
         logger.log(Level.FINER, "Player '" + player.getName() + "' opened an inventory, which is now locked for others");
 
         // Open the 'dummy' inventory because opening the original may be blocked by another plugin
-        InventorySync invSync = new InventorySync(player, inventory);
+        InventorySync invSync = new InventorySync(inventory);
 
         // Mark the player as having opened an inventory
         this.inventoryMap.put(uuid, location, invSync);
@@ -133,6 +137,7 @@ public class ContainerListener implements Listener {
         InventorySync invSync = this.inventoryMap.removeForward( player.getUniqueId() );
         if (invSync != null)
         {
+            this.logger.log(Level.FINER, "Updating original inventory's contents");
             invSync.syncToOriginal();
         }
         else

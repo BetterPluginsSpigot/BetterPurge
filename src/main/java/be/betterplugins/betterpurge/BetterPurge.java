@@ -63,7 +63,7 @@ public class BetterPurge extends JavaPlugin
     @Override
     public void onDisable()
     {
-        
+
     }
 
 

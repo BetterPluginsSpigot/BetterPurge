@@ -2,31 +2,42 @@ package be.betterplugins.betterpurge.model;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.HumanEntity;
+import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.bukkit.inventory.ItemStack;
 
 public class InventorySync
 {
+    private final static String inventoryName = "Purging inventory";
+
     private final Inventory original;
     private final Inventory copy;
 
-    public InventorySync(HumanEntity player, Inventory original)
+    public InventorySync(Inventory original)
     {
         this.original = original;
-        int originalSize = original.getSize();
-        int size = originalSize% 9 == 0 ? originalSize : originalSize + (9 - (originalSize % 9));
-        this.copy = Bukkit.createInventory(null, size, "Purging inventory");
-        this.copy.setContents( this.original.getContents() );
+
+        if (original.getType() == InventoryType.CHEST)
+        {
+            int originalSize = original.getSize();
+            this.copy = Bukkit.createInventory(null, originalSize, inventoryName);
+        }
+        else
+        {
+            this.copy = Bukkit.createInventory(null, original.getType(), inventoryName);
+        }
+
+        // Copy the inventory contents
+        for (int i = 0; i < this.original.getSize(); i++)
+            this.copy.setItem( i, this.original.getItem(i) );
+
     }
 
     public void syncToOriginal()
     {
-        for (int slot = 0; slot < copy.getSize(); slot++) {
-            this.original.setItem(slot, this.copy.getItem(slot));
-        }
+        for (int i = 0; i < this.original.getSize(); i++)
+            this.original.setItem( i, this.copy.getItem(i) );
     }
 
     public Location getLocation()
