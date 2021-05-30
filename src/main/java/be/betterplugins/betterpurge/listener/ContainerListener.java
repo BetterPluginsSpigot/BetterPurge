@@ -1,11 +1,13 @@
 package be.betterplugins.betterpurge.listener;
 
+import be.betterplugins.betterpurge.collections.DoubleMap;
 import be.betterplugins.betterpurge.messenger.BPLogger;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.model.InventorySync;
 import be.betterplugins.betterpurge.model.PurgeState;
 import be.betterplugins.betterpurge.model.PurgeStatus;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -25,8 +28,7 @@ public class ContainerListener implements Listener {
 
     private final Set<InventoryType> allowedContainers;
 
-    private final Set<UUID> activePlayers;
-    private final Map<Inventory, InventorySync> activeInventories;
+    private final DoubleMap<UUID, Location, InventorySync> inventoryMap;
 
     public ContainerListener(PurgeStatus purgeStatus, Messenger messenger, BPLogger logger)
     {
@@ -34,8 +36,7 @@ public class ContainerListener implements Listener {
         this.messenger = messenger;
         this.logger = logger;
 
-        this.activePlayers = new HashSet<>();
-        this.activeInventories = new HashMap<>();
+        this.inventoryMap = new DoubleMap<>();
 
         allowedContainers = new HashSet<InventoryType>()
         {{
@@ -53,15 +54,14 @@ public class ContainerListener implements Listener {
      */
     public void closeAll()
     {
-        for (UUID uuid : this.activePlayers)
+        for (UUID uuid : this.inventoryMap.keySetForward())
         {
             Player p = Bukkit.getPlayer( uuid );
             if (p != null)
                 p.closeInventory();
         }
 
-        this.activePlayers.clear();
-        this.activeInventories.clear();
+        this.inventoryMap.clear();
     }
 
     /**
@@ -72,11 +72,12 @@ public class ContainerListener implements Listener {
     {
 
         Inventory inventory = event.getInventory();
+        Location location = inventory.getLocation();
         HumanEntity player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
         // Prevent an infinite loop and later make sure this player will not end up in an infinite loop of calling this event
-        if (this.activePlayers.contains( uuid ))
+        if (this.inventoryMap.containsForward( uuid ))
             return;
 
         this.logger.log(Level.FINEST, "Player '" + player.getName() + " opened inventory type: '" + inventory.getType().toString() + "'");
@@ -95,10 +96,8 @@ public class ContainerListener implements Listener {
             return;
         }
 
-        System.out.println(inventory.getLocation());
-
         // Don't allow opening this container if it is already opened by someone else
-        if (activeInventories.containsKey( inventory ) || inventory.getViewers().size() > 1)
+        if (this.inventoryMap.containsBackward( location ) || inventory.getViewers().size() > 1)
         {
             event.setCancelled(true);
             logger.log(Level.FINER, "Player '" + player.getName() + "' tried to open a container that was already open");
@@ -112,27 +111,32 @@ public class ContainerListener implements Listener {
         InventorySync invSync = new InventorySync(player, inventory);
 
         // Mark the player as having opened an inventory
-        this.activePlayers.add( uuid );
-        this.activeInventories.put( inventory, invSync );
+        this.inventoryMap.put(uuid, location, invSync);
 
         // Open the copied inventory
         player.openInventory( invSync.getCopy() );
     }
 
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onChestClose(InventoryCloseEvent event)
     {
         HumanEntity player = event.getPlayer();
 
-        this.logger.log(Level.FINEST, "Player '" + player.getName() + " closed inventory type: '" + event.getInventory().getType().toString() + "'");
+        InventoryType type = event.getInventory().getType();
+        if (this.allowedContainers.contains( type ))
+            this.logger.log(Level.FINEST, "Player '" + player.getName() + " closed inventory type: '" + type.toString() + "'");
+        else return;
 
         // Mark player as not having opened an inventory and remove the inventory from being active
-        this.activePlayers.remove( player.getUniqueId() );
-        InventorySync invSync = this.activeInventories.remove( event.getInventory() );
+        InventorySync invSync = this.inventoryMap.removeForward( player.getUniqueId() );
         if (invSync != null)
         {
             invSync.syncToOriginal();
+        }
+        else
+        {
+            this.logger.log(Level.FINE, "An inventory closed that was not found. Cannot update contents");
         }
     }
 

@@ -1,6 +1,7 @@
 package be.betterplugins.betterpurge.model;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 
@@ -26,6 +27,11 @@ public class InventorySync
         for (int slot = 0; slot < copy.getSize(); slot++) {
             this.original.setItem(slot, this.copy.getItem(slot));
         }
+    }
+
+    public Location getLocation()
+    {
+        return original.getLocation();
     }
 
     public Inventory getOriginal()

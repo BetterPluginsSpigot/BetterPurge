@@ -2,6 +2,7 @@ package be.betterplugins.betterpurge.collections;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class DoubleMap<K1, K2, V>
 {
@@ -27,6 +28,25 @@ public class DoubleMap<K1, K2, V>
 
         this.fKeyMap.put(fKey, bKey);
         this.bKeyMap.put(bKey, fKey);
+    }
+
+    public void clear()
+    {
+        this.forwardMap.clear();
+        this.backwardMap.clear();
+
+        this.fKeyMap.clear();
+        this.bKeyMap.clear();
+    }
+
+    public Set<K1> keySetForward()
+    {
+        return this.forwardMap.keySet();
+    }
+
+    public Set<K2> keySetBackward()
+    {
+        return this.backwardMap.keySet();
     }
 
     public V removeForward(K1 fKey)
