@@ -51,17 +51,18 @@ public class BetterPurge extends JavaPlugin
         PurgeStatus purgeStatus = new PurgeStatus(purgeConfig);
         Messenger messenger = new Messenger(new HashMap<>(), logger, true);
 
-        // start a Purge timer
-        PurgeTimer purgetimer = new PurgeTimer(purgeStatus, purgeConfig, messenger, this);
-
-        // run every mochnute
-        purgetimer.runTaskTimer(this, 0L, 1200L);
-
         ContainerListener containerListener = new ContainerListener(purgeStatus, purgeConfig, messenger, logger);
         Bukkit.getServer().getPluginManager().registerEvents(containerListener, this );
 
         PVPListener pvpListener = new PVPListener(purgeStatus, purgeConfig, logger);
         Bukkit.getServer().getPluginManager().registerEvents(pvpListener, this);
+
+
+        // start a Purge timer
+        PurgeTimer purgetimer = new PurgeTimer(purgeStatus, purgeConfig, containerListener, messenger, this);
+
+        // run every mochnute
+        purgetimer.runTaskTimer(this, 0L, 1200L);
     }
 
     // run this code when plugin should be disabled
