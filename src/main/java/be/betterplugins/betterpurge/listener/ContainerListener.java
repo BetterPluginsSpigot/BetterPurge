@@ -15,10 +15,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -75,41 +77,43 @@ public class ContainerListener implements Listener {
     }
 
     /**
-     * Highest priority to fire as late as possible (but not monitor because we may alter the event outcome ourselves)
-      */
+     * Fire as late as possible
+     */
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onChestOpen(InventoryOpenEvent event)
+    public void onChestOpen(PlayerInteractEvent event)
     {
-
-        Inventory inventory = event.getInventory();
-        Location location = inventory.getLocation();
-        HumanEntity player = event.getPlayer();
-        UUID uuid = player.getUniqueId();
-
-        // Prevent an infinite loop and later make sure this player will not end up in an infinite loop of calling this event
-        if (this.inventoryMap.containsForward( uuid ))
-            return;
-
-        // If the inventory is a GUI, do not do anything
-        if (location == null || location.getWorld() == null || !(location.getWorld().getBlockAt( location ).getState() instanceof InventoryHolder))
+        // Don't do anything if the purge is not active
+        if (purgeStatus.getState() != PurgeState.ACTIVE)
         {
-            this.logger.log(Level.FINEST, "Player '" + player.getName() + " opened a GUI, ignoring this inventory open event");
+            this.logger.log(Level.FINER, "The purge is not active, not handling this event");
             return;
         }
 
-        this.logger.log(Level.FINEST, "Player '" + player.getName() + " opened inventory type: '" + inventory.getType().toString() + "'");
+        Player player = event.getPlayer();
+        Block block = event.getClickedBlock();
+
+        // Ignore if there was no clicked block or it has no inventory
+        if ( block == null || !(block.getState() instanceof InventoryHolder))
+        {
+            this.logger.log(Level.FINEST, "Player '" + player.getName() + "interacted, but not with a purgeable block, ignoring event");
+            return;
+        }
+
+        // Only register when the user right clicked the block
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+        {
+            this.logger.log(Level.FINEST, "Player '" + player.getName() + " did not right click, ignoring event");
+            return;
+        }
+
+        InventoryHolder holder = (InventoryHolder) block.getState();
+        Inventory inventory = holder.getInventory();
+        Location location = inventory.getLocation();
 
         // Only consider allowed containers
         if (!allowedContainers.contains( inventory.getType() ))
         {
             this.logger.log(Level.FINEST, "Player '" + player.getName() + "' tried to open an inventory that is not considered by BetterPurge");
-            return;
-        }
-
-        // Don't do anything if the purge is not active
-        if (purgeStatus.getState() != PurgeState.ACTIVE)
-        {
-            this.logger.log(Level.FINER, "The purge is not active, not handling this event");
             return;
         }
 
@@ -122,12 +126,14 @@ public class ContainerListener implements Listener {
             return;
         }
 
-        logger.log(Level.FINER, "Player '" + player.getName() + "' opened an inventory, which is now locked for others");
+        this.logger.log(Level.FINEST, "Player '" + player.getName() + " opened inventory type: '" + inventory.getType().toString() + "', which is now locked for others");
+
 
         // Open the 'dummy' inventory because opening the original may be blocked by another plugin
         InventorySync invSync = new InventorySync(inventory);
 
         // Mark the player as having opened an inventory
+        UUID uuid = player.getUniqueId();
         this.inventoryMap.put(uuid, location, invSync);
 
         // Open the copied inventory
@@ -136,6 +142,9 @@ public class ContainerListener implements Listener {
     }
 
 
+    /**
+     * Handle this event as soon as possible (LOWEST), to make sure all inventories are up-to-date
+     */
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChestClose(InventoryCloseEvent event)
     {
