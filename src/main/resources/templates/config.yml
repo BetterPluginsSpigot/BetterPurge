@@ -15,9 +15,20 @@
 # The starting time of the purge, in the format HH:MM
 start : {start}
 
-# The duration of the purge in minutes
+# The duration of the purge in minutes. Must lie in the range [2, 1400]
 # Eg. the purge is active for one hour and 14 minutes: set this to 74
 duration : {duration}
+
+# Pick the days for which the purge will be enabled
+# Set them to true to enable them, and false to not have a purge on this day
+enabled_days:
+  monday: {enabled_days.enabled}
+  tuesday: {enabled_days.enabled}
+  wednesday: {enabled_days.enabled}
+  thursday: {enabled_days.enabled}
+  friday: {enabled_days.enabled}
+  saturday: {enabled_days.enabled}
+  sunday: {enabled_days.enabled}
 
 #
 # Plundering settings

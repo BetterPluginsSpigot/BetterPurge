@@ -8,12 +8,11 @@ import be.betterplugins.betterpurge.model.PurgeStatus;
 import be.betterplugins.betterpurge.model.PurgeTime;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.time.LocalTime;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class PurgeTimer extends BukkitRunnable
 {
 
     private final PurgeStatus purgeStatus;
-    private final PurgeConfiguration purgeConfiguration;
+    private final PurgeConfiguration purgeConfig;
     private final Messenger messenger;
 
     /**
@@ -39,7 +38,7 @@ public class PurgeTimer extends BukkitRunnable
      **/
     public PurgeTimer(PurgeStatus purgeStatus, PurgeConfiguration config, Messenger messenger)
     {
-        this.purgeConfiguration = config;
+        this.purgeConfig = config;
         this.messenger = messenger;
         this.purgeStatus = purgeStatus;
     }
@@ -51,11 +50,13 @@ public class PurgeTimer extends BukkitRunnable
     public void run()
     {
         // Get the current time
-        PurgeTime timeNow = new PurgeTime( LocalTime.now() );
+        LocalDateTime localDateTime = LocalDateTime.now();
+        PurgeTime timeNow = new PurgeTime( localDateTime.toLocalTime() );
+        DayOfWeek day = localDateTime.getDayOfWeek();
 
         // Get the purge starting time
-        PurgeTime purgeStart = purgeConfiguration.getStartTime();
-        PurgeTime purgeEnd = purgeStart.addMinutes( purgeConfiguration.getDuration() );
+        PurgeTime purgeStart = purgeConfig.getStartTime();
+        PurgeTime purgeEnd = purgeStart.addMinutes( purgeConfig.getDuration() );
 
         // get the time of the config file
         getServer().getConsoleSender().sendMessage("TIME NOW IS: "+timeNow);
@@ -68,14 +69,14 @@ public class PurgeTimer extends BukkitRunnable
         {
             case DISABLED:
                 // Check if the purge should enable
-                if (timeNow.compareTo( purgeStart ) >= 0 && timeNow.compareTo( purgeEnd ) <= 0)
+                if ( purgeConfig.isDayEnabled( day ) && timeNow.isInRange(purgeStart, purgeEnd))
                 {
                     String announcementMessage = ChatColor.RED + "This is the Emergency Broadcast System announcing the commencement of the annual purge. At the siren, all emergency services will be suspended for <duration> minutes. Your government thanks you for your participation.";
                     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
                     messenger.sendMessage(
                             players,
                             announcementMessage,
-                            new MsgEntry("<duration>", purgeConfiguration.getDuration())
+                            new MsgEntry("<duration>", purgeConfig.getDuration())
                     );
                 }
                 break;

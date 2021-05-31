@@ -4,23 +4,35 @@ import java.time.LocalTime;
 
 public class PurgeTime implements Comparable<PurgeTime> {
 
+    private final boolean isNextDay;
     private final int hour;
     private final int minute;
 
     public PurgeTime(int hour, int minute)
     {
+        this(hour, minute, false);
+    }
+
+    public PurgeTime(int hour, int minute, boolean isNextDay)
+    {
+        this.isNextDay = isNextDay;
+
         this.hour = hour;
         this.minute = minute;
     }
 
     public PurgeTime(LocalTime time)
     {
+        this.isNextDay = false;
+
         this.hour = time.getHour();
         this.minute = time.getMinute();
     }
 
     public PurgeTime(String serialisedTime)
     {
+        this.isNextDay = false;
+
         String[] components = serialisedTime.split(":");
         if (components.length < 2)
             throw new IllegalArgumentException("The string '" + serialisedTime + "' cannot be parsed into a HH:MM format");
@@ -42,7 +54,20 @@ public class PurgeTime implements Comparable<PurgeTime> {
         int newHours = getHour() + addedMinutes / 60;
         int newMinutes = addedMinutes % 60;
 
-        return new PurgeTime(newHours, newMinutes);
+        boolean isNextDay = newHours / 24 > 0;
+        newHours = newHours % 24;
+
+        return new PurgeTime(newHours, newMinutes, isNextDay);
+    }
+
+    public boolean isInRange(PurgeTime start, PurgeTime stop)
+    {
+        return this.compareTo( start ) >= 0 && this.compareTo( stop ) <= 0;
+    }
+
+    public boolean isNextDay()
+    {
+        return isNextDay;
     }
 
     public int getHour()
@@ -74,16 +99,24 @@ public class PurgeTime implements Comparable<PurgeTime> {
     @Override
     public int compareTo(PurgeTime o)
     {
-        if (getHour() == o.getHour())
+        if (this.isNextDay() == o.isNextDay)
         {
-            if (getMinute() == o.getMinute())
-                return 0;
+            if (getHour() == o.getHour())
+            {
+                if (getMinute() == o.getMinute())
+                    return 0;
+                else
+                    return getMinute() > o.getMinute() ? 1 : -1;
+            }
             else
-                return getMinute() > o.getMinute() ? 1 : -1;
+            {
+                return getHour() > o.getHour() ? 1 : -1;
+            }
         }
         else
         {
-            return getHour() > o.getHour() ? 1 : -1;
+            return this.isNextDay() ? 1 : -1;
         }
     }
+
 }

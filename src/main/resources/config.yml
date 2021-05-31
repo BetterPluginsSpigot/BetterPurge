@@ -3,3 +3,6 @@ duration: 12
 enable_pvp: true
 enable_chests: true
 overwrite_safezone: false
+enabled_days:
+  enabled: true
+  disabled: false
