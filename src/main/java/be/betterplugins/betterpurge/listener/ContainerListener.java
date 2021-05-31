@@ -4,6 +4,7 @@ import be.betterplugins.betterpurge.collections.DoubleMap;
 import be.betterplugins.betterpurge.messenger.BPLogger;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.model.InventorySync;
+import be.betterplugins.betterpurge.model.PurgeConfiguration;
 import be.betterplugins.betterpurge.model.PurgeState;
 import be.betterplugins.betterpurge.model.PurgeStatus;
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ import java.util.logging.Level;
 public class ContainerListener implements Listener {
 
     private final PurgeStatus purgeStatus;
+    private final PurgeConfiguration purgeConfig;
     private final Messenger messenger;
     private final BPLogger logger;
 
@@ -41,9 +43,10 @@ public class ContainerListener implements Listener {
 
     private final DoubleMap<UUID, Location, InventorySync> inventoryMap;
 
-    public ContainerListener(PurgeStatus purgeStatus, Messenger messenger, BPLogger logger)
+    public ContainerListener(PurgeStatus purgeStatus, PurgeConfiguration purgeConfig, Messenger messenger, BPLogger logger)
     {
         this.purgeStatus = purgeStatus;
+        this.purgeConfig = purgeConfig;
         this.messenger = messenger;
         this.logger = logger;
 
@@ -82,6 +85,12 @@ public class ContainerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onChestOpen(PlayerInteractEvent event)
     {
+        // Don't handle inventories when this setting is disabled
+        if (!this.purgeConfig.shouldHandleContainers())
+        {
+            return;
+        }
+
         // Don't do anything if the purge is not active
         if (purgeStatus.getState() != PurgeState.ACTIVE)
         {

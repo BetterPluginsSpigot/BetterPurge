@@ -7,6 +7,10 @@ public class PurgeConfiguration {
     private final PurgeTime startTime;
     private final int duration;
 
+    private final boolean handleContainers;
+    private final boolean overwriteSafezonePvp;
+    private final boolean handlePVP;
+
     public PurgeConfiguration(YamlConfiguration config)
     {
         String startTime = config.getString("start");
@@ -15,14 +19,10 @@ public class PurgeConfiguration {
         assert startTime != null;
         this.startTime = new PurgeTime( startTime );
         this.duration = duration;
-    }
 
-    public PurgeConfiguration(PurgeTime startTime, int duration)
-    {
-        assert duration > 0;
-
-        this.startTime = startTime;
-        this.duration = duration;
+        this.handleContainers = config.getBoolean("enable_chests");
+        this.overwriteSafezonePvp = config.getBoolean("overwrite_safezone");
+        this.handlePVP = config.getBoolean("enable_pvp");
     }
 
     public PurgeTime getStartTime()
@@ -33,5 +33,20 @@ public class PurgeConfiguration {
     public int getDuration()
     {
         return duration;
+    }
+
+    public boolean shouldOverwriteSafezonePvp()
+    {
+        return overwriteSafezonePvp;
+    }
+
+    public boolean shouldHandleContainers()
+    {
+        return handleContainers;
+    }
+
+    public boolean shouldHandlePVP()
+    {
+        return handlePVP;
     }
 }

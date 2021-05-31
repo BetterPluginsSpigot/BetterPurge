@@ -3,11 +3,19 @@ package be.betterplugins.betterpurge.model;
 public class PurgeStatus {
 
     private PurgeState state;
+    private final PurgeConfiguration purgeConfiguration;
 
-    public PurgeStatus()
+    public PurgeStatus(PurgeConfiguration purgeConfiguration)
     {
 //        this.state = PurgeState.DISABLED;
         this.state = PurgeState.ACTIVE;
+
+        this.purgeConfiguration = purgeConfiguration;
+    }
+
+    public PurgeConfiguration getPurgeConfiguration()
+    {
+        return purgeConfiguration;
     }
 
     public void setState(PurgeState state)

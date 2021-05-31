@@ -8,6 +8,10 @@
 #                                                 |___/
 # BetterPurge v${project.version}
 
+#
+# Purge start/end settings
+#
+
 # The starting time of the purge, in the format HH:MM
 start : {start}
 
@@ -15,8 +19,26 @@ start : {start}
 # Eg. the purge is active for one hour and 14 minutes: set this to 74
 duration : {duration}
 
-# Whether to enable pvp during the purge
-enable_pvp: {enable_pvp}
+#
+# Plundering settings
+#
 
 # Allow container access during the purge, this bypasses ALL chest protection plugins (this includes worldguard, chestshops, lockette, ...)
 enable_chests: {enable_chests}
+
+#
+# PVP settings
+#
+
+# Whether to handle PVP
+# When true:
+#     - PVP outside of the purge is NOT allowed
+#     - PVP during the purge IS allowed
+# When false:
+#
+enable_pvp: {enable_pvp}
+
+# Whether to allow pvp in otherwise non-pvp zones (created with plugins such as worldguard)
+# When true:
+#     - PVP is allowed everywhere, this includes spawn areas
+overwrite_safezone: {overwrite_safezone}
