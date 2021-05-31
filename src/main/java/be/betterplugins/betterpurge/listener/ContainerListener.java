@@ -19,7 +19,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
@@ -87,6 +89,13 @@ public class ContainerListener implements Listener {
         // Prevent an infinite loop and later make sure this player will not end up in an infinite loop of calling this event
         if (this.inventoryMap.containsForward( uuid ))
             return;
+
+        // If the inventory is a GUI, do not do anything
+        if (location == null || location.getWorld() == null || !(location.getWorld().getBlockAt( location ).getState() instanceof InventoryHolder))
+        {
+            this.logger.log(Level.FINEST, "Player '" + player.getName() + " opened a GUI, ignoring this inventory open event");
+            return;
+        }
 
         this.logger.log(Level.FINEST, "Player '" + player.getName() + " opened inventory type: '" + inventory.getType().toString() + "'");
 
