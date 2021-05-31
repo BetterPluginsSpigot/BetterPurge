@@ -50,6 +50,8 @@ public class PurgeTime implements Comparable<PurgeTime> {
      */
     public PurgeTime addMinutes( int minutes )
     {
+        assert minutes >= 0;
+
         int addedMinutes = getMinute() + minutes;
         int newHours = getHour() + addedMinutes / 60;
         int newMinutes = addedMinutes % 60;
@@ -58,6 +60,25 @@ public class PurgeTime implements Comparable<PurgeTime> {
         newHours = newHours % 24;
 
         return new PurgeTime(newHours, newMinutes, isNextDay);
+    }
+
+    public PurgeTime subtractMinutes( int minutes )
+    {
+        assert minutes < 60 && minutes >= 0;
+
+        int newMinutes = getMinute() - minutes;
+        int newHours;
+        if (newMinutes < 0)
+        {
+            newHours = getHour() - 1;
+            newMinutes += 60;
+        }
+        else
+        {
+            newHours = getHour();
+        }
+
+        return new PurgeTime(newHours, newMinutes);
     }
 
     public boolean isInRange(PurgeTime start, PurgeTime stop)
@@ -103,19 +124,17 @@ public class PurgeTime implements Comparable<PurgeTime> {
         {
             if (getHour() == o.getHour())
             {
-                if (getMinute() == o.getMinute())
-                    return 0;
-                else
-                    return getMinute() > o.getMinute() ? 1 : -1;
+                return getMinute() - o.getMinute();
             }
             else
             {
-                return getHour() > o.getHour() ? 1 : -1;
+                return 60 * (getHour() - o.getHour()) + getMinute() - o.getMinute();
             }
         }
         else
         {
-            return this.isNextDay() ? 1 : -1;
+            int multiplier = isNextDay() ? 1 : -1;
+            return (multiplier * 1140) + 60 * ( getHour() - o.getHour() ) + getMinute() - o.getMinute();
         }
     }
 

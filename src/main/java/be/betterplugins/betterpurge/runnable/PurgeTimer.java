@@ -1,5 +1,6 @@
-package be.betterplugins.betterpurge;
+package be.betterplugins.betterpurge.runnable;
 
+import be.betterplugins.betterpurge.listener.ContainerListener;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.messenger.MsgEntry;
 import be.betterplugins.betterpurge.model.PurgeConfiguration;
@@ -9,6 +10,7 @@ import be.betterplugins.betterpurge.model.PurgeTime;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.DayOfWeek;
@@ -29,18 +31,22 @@ import static org.bukkit.Bukkit.getServer;
 public class PurgeTimer extends BukkitRunnable
 {
 
+    private final JavaPlugin plugin;
     private final PurgeStatus purgeStatus;
     private final PurgeConfiguration purgeConfig;
     private final Messenger messenger;
+    private final ContainerListener containerListener;
 
     /**
      * @param config gives the configuration file as parameter
      **/
-    public PurgeTimer(PurgeStatus purgeStatus, PurgeConfiguration config, Messenger messenger)
+    public PurgeTimer(PurgeStatus purgeStatus, PurgeConfiguration config, ContainerListener containerListener, Messenger messenger, JavaPlugin plugin)
     {
         this.purgeConfig = config;
         this.messenger = messenger;
         this.purgeStatus = purgeStatus;
+        this.plugin = plugin;
+        this.containerListener = containerListener;
     }
 
     /**
@@ -68,23 +74,36 @@ public class PurgeTimer extends BukkitRunnable
         switch (state)
         {
             case DISABLED:
+            case COUNTDOWN:
                 // Check if the purge should enable
-                if ( purgeConfig.isDayEnabled( day ) && timeNow.isInRange(purgeStart, purgeEnd))
+                if (purgeConfig.isDayEnabled( day ))
                 {
-                    String announcementMessage = ChatColor.RED + "This is the Emergency Broadcast System announcing the commencement of the annual purge. At the siren, all emergency services will be suspended for <duration> minutes. Your government thanks you for your participation.";
-                    List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-                    messenger.sendMessage(
-                            players,
-                            announcementMessage,
-                            new MsgEntry("<duration>", purgeConfig.getDuration())
-                    );
+                    if (timeNow.isInRange(purgeStart, purgeEnd))
+                    {
+                        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+                        messenger.sendMessage(
+                                players,
+                                "purge_start",
+                                new MsgEntry("<duration>", purgeConfig.getDuration())
+                        );
+
+                        purgeStatus.setState( PurgeState.ACTIVE );
+                        PurgeStopper purgeStopper = new PurgeStopper(purgeStatus, containerListener, messenger);
+                        purgeStopper.runTaskLater(plugin, purgeConfig.getDuration() * 1200);    // x1200 (from ticks to minutes)
+                    }
+                    else if (timeNow.isInRange( purgeStart.subtractMinutes(5), purgeStart ))
+                    {
+                        List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+                        messenger.sendMessage(
+                                players,
+                                "purge_countdown",
+                                new MsgEntry("<duration>", purgeStart.compareTo( timeNow ))
+                        );
+                    }
                 }
                 break;
-            case COUNTDOWN:
-                // Start counting down with a separate runnable
-                break;
             case ACTIVE:
-                // Check if the purge should be disabled
+                // Disabling the purge is handled from PurgeStopper
                 break;
         }
     }

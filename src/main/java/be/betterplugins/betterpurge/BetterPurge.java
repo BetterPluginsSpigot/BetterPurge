@@ -6,6 +6,7 @@ import be.betterplugins.betterpurge.messenger.BPLogger;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.model.PurgeConfiguration;
 import be.betterplugins.betterpurge.model.PurgeStatus;
+import be.betterplugins.betterpurge.runnable.PurgeTimer;
 import be.dezijwegel.betteryaml.OptionalBetterYaml;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,7 +40,7 @@ public class BetterPurge extends JavaPlugin
         // Disable the plugin & prevent further code execution if a config error happens (this should never happen)
         if (!optionalConfig.isPresent())
         {
-            Bukkit.getLogger().severe(ChatColor.RED + "BetterPurge cannot enable due to a configuration error, please contact the developer");
+            logger.log(Level.SEVERE, ChatColor.RED + "BetterPurge cannot enable due to a configuration error, please contact the developer");
             this.getPluginLoader().disablePlugin(this);
             return;
         }
@@ -51,7 +52,7 @@ public class BetterPurge extends JavaPlugin
         Messenger messenger = new Messenger(new HashMap<>(), logger, true);
 
         // start a Purge timer
-        PurgeTimer purgetimer = new PurgeTimer(purgeStatus, purgeConfig, messenger);
+        PurgeTimer purgetimer = new PurgeTimer(purgeStatus, purgeConfig, messenger, this);
 
         // run every mochnute
         purgetimer.runTaskTimer(this, 0L, 1200L);

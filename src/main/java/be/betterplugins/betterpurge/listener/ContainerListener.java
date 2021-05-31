@@ -131,7 +131,7 @@ public class ContainerListener implements Listener {
         {
             event.setCancelled(true);
             logger.log(Level.FINER, "Player '" + player.getName() + "' tried to open a container that was already open");
-            messenger.sendMessage(player, "chest_already_open");
+            messenger.sendMessage(player, "container_already_open");
             return;
         }
 
