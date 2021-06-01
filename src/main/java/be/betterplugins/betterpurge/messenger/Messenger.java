@@ -58,14 +58,14 @@ public class Messenger {
         // Get the message from lang.yml OR if non existent, get the raw message
         String message = messages.getOrDefault(messageID, messageID);
 
+        // Early return if the message is disabled
+        if (message.equals("") || message.equalsIgnoreCase("ignored"))
+            return "";
+
         if (message.equals( messageID ))
         {
             logger.log(Level.INFO, "Missing language option found: " + messageID + ". Consider adding it to the language file");
         }
-
-        // Early return if the message is disabled
-        if (message.equals("") || message.equalsIgnoreCase("ignored"))
-            return "";
 
         // Perform variable replacements
         for (MsgEntry entry : replacements)
@@ -172,7 +172,8 @@ public class Messenger {
         return true;
     }
 
-    protected void sendMessage(CommandSender receiver, String message) {
+    protected void sendMessage(CommandSender receiver, String message)
+    {
         receiver.sendMessage( message );
     }
 }

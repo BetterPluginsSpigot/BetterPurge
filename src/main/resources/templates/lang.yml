@@ -10,13 +10,16 @@
 
 # Placeholders
 #   <duration>: Replaced by a time period
-#             Supported by: purge_start, purge_countdown
+#             Supported by: purge_start, purge_start_countdown, purge_end_countdown
 
 # This message is sent to all players once the purge starts
 purge_start: {purge_start}
 
-# This message is sent every minutes, 5 minutes before the purge starts
-purge_countdown: {purge_countdown}
+# This message is sent every minute, 5 minutes before the purge starts
+purge_start_countdown: {purge_start_countdown}
+
+# This message is sent every minute, 5 minutes before the purge ends
+purge_end_countdown: {purge_start_countdown}
 
 # When the purge is active, only one player can view a chest, brewing stand, hopper, etc. at a time
 # This message is displayed when a second player tries to open an opened inventory

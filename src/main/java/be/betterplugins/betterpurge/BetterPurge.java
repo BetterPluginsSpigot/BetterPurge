@@ -6,7 +6,7 @@ import be.betterplugins.betterpurge.messenger.BPLogger;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.model.PurgeConfiguration;
 import be.betterplugins.betterpurge.model.PurgeStatus;
-import be.betterplugins.betterpurge.runnable.PurgeTimer;
+import be.betterplugins.betterpurge.runnable.PurgeScheduler;
 import be.dezijwegel.betteryaml.OptionalBetterYaml;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,10 +59,10 @@ public class BetterPurge extends JavaPlugin
 
 
         // start a Purge timer
-        PurgeTimer purgetimer = new PurgeTimer(purgeStatus, purgeConfig, containerListener, messenger, this);
+        PurgeScheduler purgeScheduler = new PurgeScheduler(purgeStatus, purgeConfig, containerListener, messenger, logger, this);
 
         // run every mochnute
-        purgetimer.runTaskTimer(this, 0L, 1200L);
+        purgeScheduler.runTaskTimer(this, 0L, 1200L);
     }
 
     // run this code when plugin should be disabled

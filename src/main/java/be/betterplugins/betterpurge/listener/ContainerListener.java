@@ -60,7 +60,11 @@ public class ContainerListener implements Listener {
             add(InventoryType.DISPENSER);
             add(InventoryType.DROPPER);
             add(InventoryType.HOPPER);
-            add(InventoryType.SHULKER_BOX);
+            // Don't allow shulker boxes! May introduce item duplication when destroyed
+//            add(InventoryType.SHULKER_BOX);
+            add(InventoryType.FURNACE);
+            add(InventoryType.BLAST_FURNACE);
+            add(InventoryType.SMOKER);
         }};
     }
 

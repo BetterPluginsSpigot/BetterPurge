@@ -23,22 +23,18 @@ public class PurgeTime implements Comparable<PurgeTime> {
 
     public PurgeTime(LocalTime time)
     {
-        this.isNextDay = false;
-
-        this.hour = time.getHour();
-        this.minute = time.getMinute();
+        this(time.getHour(), time.getMinute(), false);
     }
 
     public PurgeTime(String serialisedTime)
     {
-        this.isNextDay = false;
-
         String[] components = serialisedTime.split(":");
         if (components.length < 2)
             throw new IllegalArgumentException("The string '" + serialisedTime + "' cannot be parsed into a HH:MM format");
 
         hour = Integer.parseInt( components[0] );
         minute = Integer.parseInt( components[1] );
+        this.isNextDay = false;
     }
 
     /**
@@ -62,6 +58,11 @@ public class PurgeTime implements Comparable<PurgeTime> {
         return new PurgeTime(newHours, newMinutes, isNextDay);
     }
 
+    /**
+     * Does NOT alter this object but returns the result
+     * @param minutes the amount of minutes to be subtracted
+     * @return the result of this subtraction
+     */
     public PurgeTime subtractMinutes( int minutes )
     {
         assert minutes < 60 && minutes >= 0;
