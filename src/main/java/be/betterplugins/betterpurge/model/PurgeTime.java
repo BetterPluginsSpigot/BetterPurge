@@ -120,22 +120,11 @@ public class PurgeTime implements Comparable<PurgeTime> {
     @Override
     public int compareTo(PurgeTime o)
     {
-        if (this.isNextDay() == o.isNextDay)
-        {
-            if (getHour() == o.getHour())
-            {
-                return getMinute() - o.getMinute();
-            }
-            else
-            {
-                return 60 * (getHour() - o.getHour()) + getMinute() - o.getMinute();
-            }
-        }
-        else
-        {
-            int multiplier = isNextDay() ? 1 : -1;
-            return (multiplier * 1140) + 60 * ( getHour() - o.getHour() ) + getMinute() - o.getMinute();
-        }
+        int thisIsNextDayValue = this.isNextDay() ? 1 : 0;
+        int oIsNextDayValue = o.isNextDay() ? 1 : 0;
+
+        int dayValue = thisIsNextDayValue - oIsNextDayValue;
+        return (dayValue * 1140) + 60 * ( getHour() - o.getHour() ) + getMinute() - o.getMinute();
     }
 
 }
