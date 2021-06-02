@@ -124,8 +124,13 @@ public class PurgeTime implements Comparable<PurgeTime> {
         int thisIsNextDayValue = this.isNextDay() ? 1 : 0;
         int oIsNextDayValue = o.isNextDay() ? 1 : 0;
 
-        int dayValue = thisIsNextDayValue - oIsNextDayValue;
-        return (dayValue * 1140) + 60 * ( getHour() - o.getHour() ) + getMinute() - o.getMinute();
+        // Calculate minutes in day, hour & minute
+        int dayValue = (thisIsNextDayValue - oIsNextDayValue) * 1440;
+        int hourValue = ( getHour() - o.getHour() ) * 60;
+        int minuteValue = getMinute() - o.getMinute();
+
+        // Add all minute values
+        return dayValue + hourValue + minuteValue;
     }
 
 }

@@ -98,7 +98,6 @@ public class ContainerListener implements Listener {
         // Don't do anything if the purge is not active
         if (purgeStatus.getState() != PurgeState.ACTIVE)
         {
-            this.logger.log(Level.FINER, "The purge is not active, not handling this event");
             return;
         }
 

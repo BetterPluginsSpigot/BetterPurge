@@ -42,4 +42,17 @@ public class PurgeTimeTest {
         assert result.getHour() == 10;
         assert result.getMinute() == 10;
     }
+
+    @Test
+    public void testDayOverflow()
+    {
+        PurgeTime start = new PurgeTime(23, 55, false);
+        PurgeTime end = start.addMinutes(10);
+
+        assert end.getHour() == 0;
+        assert end.getMinute() == 5;
+        assert end.isNextDay();
+
+        assert end.compareTo(start) > 0;
+    }
 }

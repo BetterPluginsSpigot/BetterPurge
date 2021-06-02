@@ -86,7 +86,7 @@ public class PurgeScheduler extends BukkitRunnable
                 PurgeTime stopCountdown = purgeStart.subtractMinutes(1);
                 if (purgeConfig.isDayEnabled( day ) && timeNow.isInRange(startCountdown, stopCountdown ))
                 {
-                    logger.log(Level.FINEST,"Starting countdown");
+                    logger.log(Level.FINEST,"Minute countdown");
                     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
                     messenger.sendMessage(
                             players,
@@ -111,44 +111,30 @@ public class PurgeScheduler extends BukkitRunnable
                 {
                     logger.log(Level.FINEST,"Enabling the purge...");
 
-                    purgeStatus.setState( PurgeState.ACTIVE );
-
-                    Bukkit.getScheduler().runTaskTimer(
-                        plugin,
-                            new Runnable() {
-
-                            private int counter = 10;
-
-                            public void run()
-                            {
-                                if (counter > 0)
-                                {
-                                    // SHOW 10 second countdown
-                                    String message = messenger.composeMessage(
-                                            "seconds_countdown",
-                                            new MsgEntry("<time>", counter)
-                                    );
+                    new CountdownRunnable(
+                        10,
+                            (int count) -> {
+                                logger.log(Level.FINEST, "Countdown: " + count);
+                                // SHOW 10 second countdown
+                                String message = messenger.composeMessage(
+                                        "seconds_countdown",
+                                        new MsgEntry("<time>", count)
+                                );
+                                if (!message.equals(""))
                                     for (Player player : Bukkit.getOnlinePlayers())
                                         player.sendTitle("", message, 5, 10, 5);
-                                }
-                                else
-                                {
-                                    List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-                                    messenger.sendMessage(
-                                            players,
-                                            "purge_start",
-                                            new MsgEntry("<duration>", purgeConfig.getDuration())
-                                    );
-
-                                    // HANDLE Cancellng
-
-                                }
-
-                                counter--;
+                            },
+                            (int count) -> {
+                                logger.log(Level.FINEST, "Countdown done: " + count);
+                                List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+                                messenger.sendMessage(
+                                        players,
+                                        "purge_start",
+                                        new MsgEntry("<duration>", purgeConfig.getDuration())
+                                );
+                                purgeStatus.setState( PurgeState.ACTIVE );
                             }
-                        },
-                        0L, 20L
-                    );
+                    ).runTaskTimer(plugin, 0L, 20L);
                 }
                 else
                 {
