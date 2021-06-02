@@ -28,13 +28,13 @@ duration : {duration}
 # Pick the days for which the purge will be enabled
 # Set them to true to enable them, and false to not have a purge on this day
 enabled_days:
-  monday: {enabled_days.enabled}
-  tuesday: {enabled_days.enabled}
-  wednesday: {enabled_days.enabled}
-  thursday: {enabled_days.enabled}
-  friday: {enabled_days.enabled}
-  saturday: {enabled_days.enabled}
-  sunday: {enabled_days.enabled}
+  monday: {enabled_days.monday}
+  tuesday: {enabled_days.tuesday}
+  wednesday: {enabled_days.wednesday}
+  thursday: {enabled_days.thursday}
+  friday: {enabled_days.friday}
+  saturday: {enabled_days.saturday}
+  sunday: {enabled_days.sunday}
 
 #
 # Plundering settings

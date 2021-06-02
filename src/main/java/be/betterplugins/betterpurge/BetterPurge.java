@@ -33,7 +33,7 @@ public class BetterPurge extends JavaPlugin
     public void onEnable()
     {
 
-        BPLogger logger = new BPLogger(Level.ALL);
+        BPLogger logger = new BPLogger(Level.WARNING);
 
         // Initialise configuration
 
@@ -49,7 +49,7 @@ public class BetterPurge extends JavaPlugin
         }
 
         YamlConfiguration config = optionalConfig.get();
-        PurgeConfiguration purgeConfig = new PurgeConfiguration(config);
+        PurgeConfiguration purgeConfig = new PurgeConfiguration(config, logger);
 
         // Initialising localisation
 

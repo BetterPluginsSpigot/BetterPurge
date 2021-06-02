@@ -5,5 +5,10 @@ enable_pvp: true
 enable_chests: true
 overwrite_safezone: false
 enabled_days:
-  enabled: true
-  disabled: false
+  monday: true
+  tuesday: true
+  wednesday: true
+  thursday: true
+  friday: true
+  saturday: true
+  sunday: true
