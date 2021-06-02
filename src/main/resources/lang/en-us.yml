@@ -1,0 +1,4 @@
+purge_start: "&4This is the Emergency Broadcast System announcing the commencement of the annual purge. At the siren, all emergency services will be suspended for <duration> minutes. Your government thanks you for your participation."
+purge_start_countdown: "&cThe purge is starting in <duration> minutes, get ready!"
+purge_end_countdown: "&cThe purge is almost over, <duration> minutes are left!"
+container_already_open: "This chest is occupied by another player, please wait until they are done"

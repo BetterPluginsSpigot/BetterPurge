@@ -8,6 +8,12 @@
 #                                                 |___/
 # BetterPurge v${project.version}
 
+# Which language file should be loaded? When changing to a different language, make sure to delete lang.yml
+# Options are:
+#     en-US: English
+#     nl-BE: Dutch
+lang: {lang}
+
 #
 # Purge start/end settings
 #

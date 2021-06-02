@@ -7,6 +7,7 @@ import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.model.PurgeConfiguration;
 import be.betterplugins.betterpurge.model.PurgeStatus;
 import be.betterplugins.betterpurge.runnable.PurgeScheduler;
+import be.dezijwegel.betteryaml.BetterLang;
 import be.dezijwegel.betteryaml.OptionalBetterYaml;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,7 +34,8 @@ public class BetterPurge extends JavaPlugin
 
         BPLogger logger = new BPLogger(Level.ALL);
 
-        // BetterYaml-config implementation
+        // Initialise configuration
+
         OptionalBetterYaml betterYaml = new OptionalBetterYaml("config.yml", this, true);
         Optional<YamlConfiguration> optionalConfig = betterYaml.getYamlConfiguration();
 
@@ -48,8 +50,24 @@ public class BetterPurge extends JavaPlugin
         YamlConfiguration config = optionalConfig.get();
         PurgeConfiguration purgeConfig = new PurgeConfiguration(config);
 
+        // Initialising localisation
+
+        String localised = config.getString("lang") != null ? config.getString("lang") : "en-US";
+        assert localised != null;
+        BetterLang betterLang = new BetterLang("lang.yml", localised.toLowerCase() + ".yml", this, true);
+
+        if (!betterLang.getYamlConfiguration().isPresent())
+        {
+            logger.log(Level.WARNING, "Language '" + localised + "' not found. Reverting to default: 'en-US'");
+            betterLang = new BetterLang("lang.yml", "en-us.yml", this);
+        }
+
+        // Initialise util objects
+
         PurgeStatus purgeStatus = new PurgeStatus(purgeConfig);
-        Messenger messenger = new Messenger(new HashMap<>(), logger, true);
+        Messenger messenger = new Messenger(betterLang.getMessages(), logger, true);
+
+        // Initialise listeners
 
         ContainerListener containerListener = new ContainerListener(purgeStatus, purgeConfig, messenger, logger);
         Bukkit.getServer().getPluginManager().registerEvents(containerListener, this );
@@ -57,8 +75,8 @@ public class BetterPurge extends JavaPlugin
         PVPListener pvpListener = new PVPListener(purgeStatus, purgeConfig, logger);
         Bukkit.getServer().getPluginManager().registerEvents(pvpListener, this);
 
+        // Initialise runnables
 
-        // start a Purge timer
         PurgeScheduler purgeScheduler = new PurgeScheduler(purgeStatus, purgeConfig, containerListener, messenger, logger, this);
 
         // run every mochnute

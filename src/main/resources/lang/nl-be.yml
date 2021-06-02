@@ -1,0 +1,4 @@
+purge_start: "&4De purge gaat van start! De staff bedankt u voor uw medewerking."
+purge_start_countdown: "&4De purge start over <duration> minuten, bereid jezelf voor!"
+purge_end_countdown: "&cDe purge is bijna gedaan, nog <duration> minuten over!"
+container_already_open: "Deze kist is reeds geopend door een andere speler, wacht even tot ze klaar zijn"

@@ -203,7 +203,7 @@ public class ContainerListener implements Listener {
                 {
                     if (item != null)
                     {
-                        assert invLocation != null;
+                        assert invLocation != null && invLocation.getWorld() != null;
                         invLocation.getWorld().dropItem(invLocation, item);
                     }
                 }
