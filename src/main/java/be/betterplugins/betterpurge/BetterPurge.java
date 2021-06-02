@@ -12,9 +12,9 @@ import be.dezijwegel.betteryaml.OptionalBetterYaml;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -27,7 +27,8 @@ import java.util.logging.Level;
 public class BetterPurge extends JavaPlugin
 {
 
-    // run this code when plugin should is enabled
+    private PurgeScheduler purgeScheduler;
+
     @Override
     public void onEnable()
     {
@@ -77,19 +78,28 @@ public class BetterPurge extends JavaPlugin
 
         // Initialise runnables
 
-        PurgeScheduler purgeScheduler = new PurgeScheduler(purgeStatus, purgeConfig, containerListener, messenger, logger, this);
+        purgeScheduler = new PurgeScheduler(purgeStatus, purgeConfig, containerListener, messenger, logger, this);
 
         // run every mochnute
         purgeScheduler.runTaskTimer(this, 0L, 1200L);
+
+        // Initialise command handler
+        CommandHandler commandHandler = new CommandHandler(messenger, logger, purgeStatus, this);
+        this.getCommand("betterpurge").setExecutor( commandHandler );
     }
 
-    // run this code when plugin should be disabled
+
     @Override
     public void onDisable()
     {
-
+        this.purgeScheduler.cancel();
+        HandlerList.unregisterAll(this);
     }
 
 
-
+    public void reload()
+    {
+        this.onDisable();
+        this.onEnable();
+    }
 }

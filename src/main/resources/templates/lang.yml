@@ -15,6 +15,9 @@
 # This message is sent to all players once the purge starts
 purge_start: "{purge_start}"
 
+# Shown to all players when a start of the purge is forced
+purge_force_start: "{purge_force_start}"
+
 # This message is sent every minute, 5 minutes before the purge starts
 purge_start_countdown: "{purge_start_countdown}"
 
@@ -27,3 +30,17 @@ purge_end_countdown: "{purge_end_countdown}"
 # When the purge is active, only one player can view a chest, brewing stand, hopper, etc. at a time
 # This message is displayed when a second player tries to open an opened inventory
 container_already_open: "{container_already_open}"
+
+# Shown once a reload is complete
+reload_complete: "{reload_complete}"
+
+# Shown when a player executes /bp help (only the commands they have access to are shown)
+help_intro: "{help_intro}"
+help_status: "{help_status}"
+help_reload: "{help_reload}"
+help_start: "{help_start}"
+
+# These messages are shown when a player requests information about the purge
+status_purge_today: "{status_purge_today}"
+status_purge_start: "{status_purge_start}"
+status_purge_end: "{status_purge_end}"

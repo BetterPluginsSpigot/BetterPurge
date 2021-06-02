@@ -37,6 +37,26 @@ public class MsgEntry {
     }
 
     /**
+     * Keeps track of a tag and its replacement for use in PlayerMessenger
+     * @param tag the original tag
+     * @param replacement the replacement value of this tag
+     */
+    public MsgEntry(String tag, boolean replacement)
+    {
+        this(tag, replacement, "true", "false");
+    }
+
+    /**
+     * Keeps track of a tag and its replacement for use in PlayerMessenger
+     * @param tag the original tag
+     * @param replacement the replacement value of this tag
+     */
+    public MsgEntry(String tag, boolean replacement, String trueValue, String falseValue)
+    {
+        this(tag, replacement ? trueValue : falseValue);
+    }
+
+    /**
      * Get the tag that should be replaced
      * @return the tag
      */

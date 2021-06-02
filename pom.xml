@@ -35,6 +35,12 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>19.0.0</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- BetterYAML -->
         <dependency>
@@ -80,7 +86,7 @@
             </resource>
         </resources>
 
-        <!-- Shade bStats into BetterPurge -->
+        <!-- Shade BetterYaml into BetterPurge -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

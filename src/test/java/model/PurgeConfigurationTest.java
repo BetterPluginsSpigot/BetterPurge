@@ -19,8 +19,8 @@ public class PurgeConfigurationTest
 
         PurgeConfiguration purgeConfiguration = new PurgeConfiguration(config);
         assert purgeConfiguration.getDuration() == 10;
-        assert purgeConfiguration.getStartTime().getHour() == 15;
-        assert purgeConfiguration.getStartTime().getMinute() == 38;
+        assert purgeConfiguration.getConfiguredStartTime().getHour() == 15;
+        assert purgeConfiguration.getConfiguredStartTime().getMinute() == 38;
     }
 
 }

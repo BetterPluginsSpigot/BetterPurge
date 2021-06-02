@@ -1,5 +1,29 @@
 name: BetterPurge
 main: be.betterplugins.betterpurge.BetterPurge
 version: ${project.version}
-author: Thomas Verschoor
+author: BetterPlugins
 api-version: 1.16
+commands:
+  betterpurge:
+    aliases:
+      - bp
+    description: BetterPurge commands
+    permission: betterpurge
+permissions:
+  betterpurge:
+    default: true
+  betterpurge.*:
+    default: op
+    children:
+      betterpurge.help: true
+      betterpurge.status: true
+      betterpurge.start: true
+      betterpurge.reload: true
+  betterpurge.help:
+    default: true
+  betterpurge.status:
+    default: true
+  betterpurge.start:
+    default: op
+  betterpurge.reload:
+    default: op

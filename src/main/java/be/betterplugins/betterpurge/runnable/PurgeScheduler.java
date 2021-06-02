@@ -9,7 +9,6 @@ import be.betterplugins.betterpurge.model.PurgeState;
 import be.betterplugins.betterpurge.model.PurgeStatus;
 import be.betterplugins.betterpurge.model.PurgeTime;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -19,8 +18,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
-import static org.bukkit.Bukkit.getServer;
 
 
 /**
@@ -65,7 +62,7 @@ public class PurgeScheduler extends BukkitRunnable
         DayOfWeek day = localDateTime.getDayOfWeek();
 
         // Get the purge starting time
-        PurgeTime purgeStart = purgeConfig.getStartTime();
+        PurgeTime purgeStart = purgeStatus.getNextStartTime();
         PurgeTime purgeEnd = purgeStart.addMinutes( purgeConfig.getDuration() );
 
         // get the time of the config file
@@ -118,7 +115,7 @@ public class PurgeScheduler extends BukkitRunnable
                                 // SHOW 10 second countdown
                                 String message = messenger.composeMessage(
                                         "seconds_countdown",
-                                        new MsgEntry("<time>", count)
+                                        new MsgEntry("<duration>", count)
                                 );
                                 if (!message.equals(""))
                                     for (Player player : Bukkit.getOnlinePlayers())

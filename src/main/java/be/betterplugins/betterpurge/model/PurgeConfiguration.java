@@ -48,7 +48,7 @@ public class PurgeConfiguration {
         this.duration = Math.max( Math.min( duration, 1400), 2);
     }
 
-    public PurgeTime getStartTime()
+    public PurgeTime getConfiguredStartTime()
     {
         return startTime;
     }
