@@ -162,7 +162,7 @@ public class PurgeScheduler extends BukkitRunnable
                     messenger.sendMessage(
                             players,
                             "purge_end_countdown",
-                            new MsgEntry("<duration>", purgeConfig.getDuration())
+                            new MsgEntry("<duration>", remainingMinutes)
                     );
                 }
                 else

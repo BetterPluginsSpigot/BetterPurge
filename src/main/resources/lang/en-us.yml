@@ -2,6 +2,7 @@ purge_start: "&4This is the Emergency Broadcast System announcing the commenceme
 purge_force_start: "&4The purge will commence shortly!"
 purge_start_countdown: "&cThe purge is starting in <duration> [<duration>.minute.minutes], get ready!"
 purge_end_countdown: "&cThe purge is almost over, <duration> [<duration>.minute.minutes] are left!"
+purge_ended: "The purge has ended, you can feel safe again!"
 container_already_open: "This chest is occupied by another player, please wait until they are done"
 seconds_countdown: "The purge starts in <duration> [<duration>.second.seconds]"
 reload_complete: "Reload complete!"

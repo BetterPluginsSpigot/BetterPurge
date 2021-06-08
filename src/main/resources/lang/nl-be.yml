@@ -2,6 +2,7 @@ purge_start: "&4De purge gaat van start! De staff bedankt u voor uw medewerking.
 purge_force_start: "&4De purge gaat zo van start!"
 purge_start_countdown: "&4De purge start over <duration> [<duration>.minuut.minuten], bereid jezelf voor!"
 purge_end_countdown: "&cDe purge is bijna gedaan, nog [<duration>.minuut.minuten] over!"
+purge_ended: "De purge is nu gedaan, je bent weer veilig!"
 container_already_open: "Deze kist is reeds geopend door een andere speler, wacht even tot ze klaar zijn"
 seconds_countdown: "De purge begint over <duration> [<duration>.seconde.seconden]"
 reload_complete: "Klaar met herladen!"
