@@ -5,8 +5,9 @@ import be.betterplugins.betterpurge.listener.PVPListener;
 import be.betterplugins.betterpurge.messenger.BPLogger;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.model.PurgeConfiguration;
+import be.betterplugins.betterpurge.model.PurgeHandler;
 import be.betterplugins.betterpurge.model.PurgeStatus;
-import be.betterplugins.betterpurge.runnable.PurgeScheduler;
+import be.betterplugins.betterpurge.runnable.PurgeStartScheduler;
 import be.dezijwegel.betteryaml.BetterLang;
 import be.dezijwegel.betteryaml.OptionalBetterYaml;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ import java.util.logging.Level;
 public class BetterPurge extends JavaPlugin
 {
 
-    private PurgeScheduler purgeScheduler;
+    private PurgeStartScheduler purgeStartScheduler;
 
     @Override
     public void onEnable()
@@ -76,15 +77,18 @@ public class BetterPurge extends JavaPlugin
         PVPListener pvpListener = new PVPListener(purgeStatus, purgeConfig, logger);
         Bukkit.getServer().getPluginManager().registerEvents(pvpListener, this);
 
+        // Initialise purge handler
+        PurgeHandler purgeHandler = new PurgeHandler(purgeStatus, containerListener, purgeConfig, messenger, logger, this);
+
         // Initialise runnables
 
-        purgeScheduler = new PurgeScheduler(purgeStatus, purgeConfig, containerListener, messenger, logger, this);
+        purgeStartScheduler = new PurgeStartScheduler(purgeHandler, purgeConfig, messenger, logger);
 
         // run every mochnute
-        purgeScheduler.runTaskTimer(this, 0L, 1200L);
+        purgeStartScheduler.runTaskTimer(this, 0L, 1200L);
 
         // Initialise command handler
-        CommandHandler commandHandler = new CommandHandler(messenger, logger, purgeStatus, this);
+        CommandHandler commandHandler = new CommandHandler(messenger, logger, purgeHandler, this);
         this.getCommand("betterpurge").setExecutor( commandHandler );
     }
 
@@ -92,7 +96,7 @@ public class BetterPurge extends JavaPlugin
     @Override
     public void onDisable()
     {
-        this.purgeScheduler.cancel();
+        this.purgeStartScheduler.cancel();
         HandlerList.unregisterAll(this);
     }
 

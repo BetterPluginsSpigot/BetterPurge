@@ -4,6 +4,7 @@ import be.betterplugins.betterpurge.command.*;
 import be.betterplugins.betterpurge.messenger.BPLogger;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.messenger.MsgEntry;
+import be.betterplugins.betterpurge.model.PurgeHandler;
 import be.betterplugins.betterpurge.model.PurgeStatus;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,14 +25,16 @@ public class CommandHandler implements CommandExecutor
     private final Map<String, BPCommand> commandMap;
     private final HelpCommand helpCommand;
 
-    public CommandHandler(Messenger messenger, BPLogger logger, PurgeStatus purgeStatus, BetterPurge purgePlugin)
+    public CommandHandler(Messenger messenger, BPLogger logger, PurgeHandler purgeHandler, BetterPurge purgePlugin)
     {
         this.messenger = messenger;
         this.logger = logger;
 
-        BPCommand status = new StatusCommand(messenger, purgeStatus);
+        // When implementing unit testing, use a factory provided through the constructor to create BPCommand instances
+        BPCommand status = new StatusCommand(messenger, purgeHandler.getPurgeStatus());
         BPCommand reload = new ReloadCommand(messenger, purgePlugin);
-        BPCommand start = new StartCommand(messenger, purgeStatus);
+        BPCommand start = new StartCommand(messenger, purgeHandler);
+        BPCommand stop = new StopCommand(messenger, purgeHandler);
 
         this.commandMap = new HashMap<String, BPCommand>()
         {{
@@ -42,6 +45,8 @@ public class CommandHandler implements CommandExecutor
             put("r", reload);
 
             put("start", start);
+
+            put("stop", stop);
         }};
 
         this.helpCommand = new HelpCommand(messenger, commandMap);

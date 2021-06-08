@@ -8,6 +8,8 @@
 #                                                 |___/
 # BetterPurge v${project.version}
 
+# Disable any message by setting it to ""
+
 # Placeholders
 #   <duration>: Replaced by a time period
 #             Supported by: purge_start, purge_start_countdown, purge_end_countdown
@@ -17,6 +19,9 @@ purge_start: {purge_start}
 
 # Shown to all players when a start of the purge is forced
 purge_force_start: {purge_force_start}
+
+# Shown to all players when the purge is forced to stop
+purge_force_stop: {purge_force_stop}
 
 # This message is sent every minute, 5 minutes before the purge starts
 purge_start_countdown: {purge_start_countdown}
@@ -36,6 +41,9 @@ container_already_open: {container_already_open}
 
 # Shown once a reload is complete
 reload_complete: {reload_complete}
+
+# Shown when the player inputs a value that is not a number into /bp start
+not_a_number: {not_a_number}
 
 # Shown when a player executes /bp help (only the commands they have access to are shown)
 help_intro: {help_intro}

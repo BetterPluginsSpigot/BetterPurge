@@ -3,6 +3,7 @@ package be.betterplugins.betterpurge.command;
 import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.messenger.MsgEntry;
 import be.betterplugins.betterpurge.model.PurgeStatus;
+import be.betterplugins.betterpurge.model.PurgeTime;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +39,7 @@ public class StatusCommand extends BPCommand
     public boolean execute(@NotNull Player commandSender, @NotNull Command command, @NotNull String[] arguments)
     {
         DayOfWeek day = LocalDateTime.now().getDayOfWeek();
+        PurgeTime startTime = purgeStatus.getPurgeConfiguration().getConfiguredStartTime();
         messenger.sendMessage(
                 commandSender,
                 "status_purge_today",
@@ -47,13 +49,13 @@ public class StatusCommand extends BPCommand
                 commandSender,
                 "status_purge_start",
                 new MsgEntry("<time>",
-                purgeStatus.getNextStartTime().toString())
+                startTime.toString())
         );
         messenger.sendMessage(
                 commandSender,
                 "status_purge_end",
                 new MsgEntry("<time>",
-                purgeStatus.getNextStartTime().addMinutes( purgeStatus.getPurgeConfiguration().getDuration() ).toString())
+                startTime.addMinutes( purgeStatus.getPurgeConfiguration().getDuration() ).toString())
         );
         return true;
     }
