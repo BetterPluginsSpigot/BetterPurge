@@ -23,6 +23,7 @@ public class PurgeHandler
     private final Messenger messenger;
     private final BPLogger logger;
 
+    private CountdownRunnable startCounter;
     private CountdownRunnable stopCounter;
 
     public PurgeHandler(PurgeStatus purgeStatus, ContainerListener containerListener, PurgeConfiguration purgeConfig, Messenger messenger, BPLogger logger, JavaPlugin plugin)
@@ -61,11 +62,13 @@ public class PurgeHandler
             return;
         }
 
+        purgeStatus.setState( PurgeState.COUNTDOWN );
+
         logger.log(Level.FINEST,"Enabling the purge...");
 
         int purgeDuration = duration > 0 ? duration : purgeConfig.getDuration();
 
-        new CountdownRunnable(
+        startCounter = new CountdownRunnable(
                 10,
                 (int count) -> {
                     logger.log(Level.FINEST, "Countdown: " + count);
@@ -89,21 +92,24 @@ public class PurgeHandler
                     purgeStatus.setState( PurgeState.ACTIVE );
                     this.stopPurge( purgeDuration );
                 }
-        ).runTaskTimer(plugin, 0L, 20L);
+        );
+        startCounter.runTaskTimer(plugin, 0L, 20L);
     }
 
     /**
      * Stop the purge at once
      */
-    public void stopPurge()
+    public boolean stopPurge()
     {
         if (purgeStatus.getState() == PurgeState.DISABLED)
         {
             logger.log(Level.FINE, "Tried disabling the purge while it was already disabled");
-            return;
+            return false;
         }
 
         logger.log(Level.FINEST,"Disabling the purge");
+
+        cancelCounter(startCounter);
 
         // Close all opened purge inventories
         this.containerListener.closeAll();
@@ -112,6 +118,7 @@ public class PurgeHandler
         messenger.sendMessage(players, "purge_ended");
         // Update the purge's state
         purgeStatus.setState(PurgeState.DISABLED);
+        return true;
     }
 
 
@@ -122,6 +129,8 @@ public class PurgeHandler
      */
     public void stopPurge(int minutes)
     {
+        cancelCounter(stopCounter);
+
         stopCounter = new CountdownRunnable(
             minutes,
             (int remainingMinutes) ->
@@ -148,5 +157,18 @@ public class PurgeHandler
             }
         );
         stopCounter.runTaskTimer(plugin, 0L, 1200L);
+    }
+
+
+    private void cancelCounter(CountdownRunnable counter)
+    {
+        if (counter != null)
+        {
+            try
+            {
+                counter.cancel();
+            }
+            catch (IllegalStateException ignored) {}
+        }
     }
 }

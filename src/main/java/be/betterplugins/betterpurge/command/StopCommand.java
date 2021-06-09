@@ -35,8 +35,14 @@ public class StopCommand extends BPCommand
     @Override
     public boolean execute(@NotNull Player commandSender, @NotNull Command command, @NotNull String[] arguments)
     {
-        messenger.sendMessage( new ArrayList<>(Bukkit.getOnlinePlayers() ), "purge_force_stop");
-        purgeHandler.stopPurge();
+        if (purgeHandler.stopPurge())
+        {
+            messenger.sendMessage( new ArrayList<>(Bukkit.getOnlinePlayers() ), "purge_force_stop");
+        }
+        else
+        {
+            messenger.sendMessage(commandSender, "&cFailed to stop the purge, it is currently not active");
+        }
         return true;
     }
 }
