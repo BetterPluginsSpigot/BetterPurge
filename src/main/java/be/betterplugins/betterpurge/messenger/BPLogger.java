@@ -6,7 +6,7 @@ import java.util.logging.Level;
 
 public class BPLogger {
 
-    private final Level logLevel;
+    private Level logLevel;
 
     /**
      * Different logging levels that we use:
@@ -19,6 +19,24 @@ public class BPLogger {
     public BPLogger(Level logLevel)
     {
         this.logLevel = logLevel;
+    }
+
+    /**
+     * Modify the log level
+     * During development: ALL
+     * During beta testing: FINE
+     * During live release: INFO
+     *
+     * @param newLevel the new level of the logger
+     */
+    public void setLogLevel(Level newLevel)
+    {
+        this.logLevel = newLevel;
+    }
+
+    public Level getLogLevel()
+    {
+        return logLevel;
     }
 
     /**

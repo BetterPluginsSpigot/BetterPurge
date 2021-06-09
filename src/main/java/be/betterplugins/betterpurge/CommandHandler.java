@@ -35,6 +35,7 @@ public class CommandHandler implements CommandExecutor
         BPCommand reload = new ReloadCommand(messenger, purgePlugin);
         BPCommand start = new StartCommand(messenger, purgeHandler);
         BPCommand stop = new StopCommand(messenger, purgeHandler);
+        BPCommand logLevel = new LogLevelCommand(messenger, logger);
 
         this.commandMap = new HashMap<String, BPCommand>()
         {{
@@ -47,6 +48,8 @@ public class CommandHandler implements CommandExecutor
             put("start", start);
 
             put("stop", stop);
+
+            put("loglevel", logLevel);
         }};
 
         this.helpCommand = new HelpCommand(messenger, commandMap);
