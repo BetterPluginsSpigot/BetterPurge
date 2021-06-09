@@ -19,10 +19,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -107,7 +105,7 @@ public class ContainerListener implements Listener {
         // Ignore if there was no clicked block or it has no inventory
         if ( block == null || !(block.getState() instanceof InventoryHolder))
         {
-            this.logger.log(Level.FINEST, "Player '" + player.getName() + "interacted, but not with a purgeable block, ignoring event");
+            this.logger.log(Level.FINEST, "Player '" + player.getName() + "' interacted, but not with a purgeable block, ignoring event");
             return;
         }
 
