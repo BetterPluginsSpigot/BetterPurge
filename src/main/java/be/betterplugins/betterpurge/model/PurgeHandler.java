@@ -89,6 +89,7 @@ public class PurgeHandler
                             "purge_start",
                             new MsgEntry("<duration>", purgeDuration)
                     );
+                    containerListener.closeAll();
                     purgeStatus.setState( PurgeState.ACTIVE );
                     this.stopPurge( purgeDuration );
                 }
