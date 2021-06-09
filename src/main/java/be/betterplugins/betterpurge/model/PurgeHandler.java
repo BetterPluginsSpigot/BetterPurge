@@ -110,6 +110,7 @@ public class PurgeHandler
         logger.log(Level.FINEST,"Disabling the purge");
 
         cancelCounter(startCounter);
+        cancelCounter(stopCounter);
 
         // Close all opened purge inventories
         this.containerListener.closeAll();
