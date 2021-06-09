@@ -6,6 +6,7 @@ import be.betterplugins.betterpurge.messenger.Messenger;
 import be.betterplugins.betterpurge.messenger.MsgEntry;
 import be.betterplugins.betterpurge.runnable.CountdownRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -89,7 +90,7 @@ public class PurgeHandler
                             "purge_start",
                             new MsgEntry("<duration>", purgeDuration)
                     );
-                    containerListener.closeAll();
+                    Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
                     purgeStatus.setState( PurgeState.ACTIVE );
                     this.stopPurge( purgeDuration );
                 }
