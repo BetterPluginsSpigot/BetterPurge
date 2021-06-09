@@ -48,11 +48,13 @@ enable_chests: {enable_chests}
 #
 
 # Whether to handle PVP
+# Make sure to set pvp=true in server.properties! Otherwise, BetterPurge cannot enable pvp
 # When true:
-#     - PVP outside of the purge is NOT allowed
-#     - PVP during the purge IS allowed
+#     - Purge inactive: BetterPurge disables ALL pvp
+#     - During active: BetterPurge does not disable pvp
 # When false:
-#
+#     - Purge inactive: PVP is not altered by BetterPurge
+#     - During active: PVP is not altered by BetterPurge
 enable_pvp: {enable_pvp}
 
 # Whether to allow pvp in otherwise non-pvp zones (created with plugins such as worldguard)
