@@ -96,7 +96,8 @@ public class BetterPurge extends JavaPlugin
     @Override
     public void onDisable()
     {
-        this.purgeStartScheduler.cancel();
+        if (this.purgeStartScheduler != null && !this.purgeStartScheduler.isCancelled())
+            this.purgeStartScheduler.cancel();
         HandlerList.unregisterAll(this);
     }
 
