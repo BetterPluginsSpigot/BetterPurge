@@ -8,7 +8,7 @@
 #                                                 |___/
 # BetterPurge v${project.version}
 
-# Which language file should be loaded? When changing to a different language, make sure to delete lang.yml
+# Which language file should be loaded? When changing to a different language, make sure to delete lang.yml and restart your server
 # Options are:
 #     en-US: English
 #     nl-BE: Dutch
@@ -19,11 +19,17 @@ lang: {lang}
 #
 
 # The starting time of the purge, in the format HH:MM
-start : {start}
+start: {start}
 
 # The duration of the purge in minutes. Must lie in the range [2, 1400]
-# Eg. the purge is active for one hour and 14 minutes: set this to 74
-duration : {duration}
+# Eg. if you want the purge to be active for one hour and 14 minutes: set this to 74
+duration: {duration}
+
+# The amount of warnings that are given before the purge starts or stops
+# One warning will be broadcast in chat every minute before the end and/or start of the purge
+# Set to 0 to disable purge start/end warnings
+num_start_warnings: {num_start_warnings}
+num_stop_warnings: {num_stop_warnings}
 
 # Pick the days for which the purge will be enabled
 # Set them to true to enable them, and false to not have a purge on this day
@@ -37,15 +43,11 @@ enabled_days:
   sunday: {enabled_days.sunday}
 
 #
-# Plundering settings
+# Purge settings
 #
 
 # Allow container access during the purge, this bypasses ALL chest protection plugins (this includes worldguard, chestshops, lockette, ...)
 enable_chests: {enable_chests}
-
-#
-# PVP settings
-#
 
 # Whether to handle PVP
 # Make sure to set pvp=true in server.properties! Otherwise, BetterPurge cannot enable pvp
@@ -53,9 +55,9 @@ enable_chests: {enable_chests}
 #     - Purge inactive: BetterPurge disables ALL pvp
 #     - During active: BetterPurge does not disable pvp
 # When false:
-#     - Purge inactive: PVP is not altered by BetterPurge
-#     - During active: PVP is not altered by BetterPurge
-enable_pvp: {enable_pvp}
+#     - Purge inactive: PVP is not altered by BetterPurge (depends on your other plugins)
+#     - During active: PVP is not altered by BetterPurge (depends on your other plugins)
+handle_pvp: {enable_pvp}
 
 # Whether to allow pvp in otherwise non-pvp zones (created with plugins such as worldguard)
 # When true:

@@ -73,11 +73,11 @@ public class PurgeStartScheduler extends BukkitRunnable
         {
             case DISABLED:
                 // Check if a countdown should start
-                PurgeTime startCountdown = purgeStart.subtractMinutes(5);
+                PurgeTime startCountdown = purgeStart.subtractMinutes( purgeConfig.getNumStartWarnings() );
                 PurgeTime stopCountdown = purgeStart.subtractMinutes(1);
                 if (purgeConfig.isDayEnabled( day ) && timeNow.isInRange(startCountdown, stopCountdown ))
                 {
-                    logger.log(Level.FINEST,"Minute countdown");
+                    logger.log(Level.FINEST,"Minute purge start countdown");
                     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
                     messenger.sendMessage(
                             players,
@@ -93,7 +93,7 @@ public class PurgeStartScheduler extends BukkitRunnable
                 }
                 else
                 {
-                    logger.log(Level.FINEST,"No need to count down. Past start time? " + (timeNow.compareTo(startCountdown) >= 0) + ". Before end time? " + (timeNow.compareTo(stopCountdown) <= 0));
+                    logger.log(Level.FINEST,"Purge start countdown: No need to count down. Past start time? " + (timeNow.compareTo(startCountdown) >= 0) + ". Before end time? " + (timeNow.compareTo(stopCountdown) <= 0));
                 }
                 break;
             case COUNTDOWN:
@@ -109,7 +109,7 @@ public class PurgeStartScheduler extends BukkitRunnable
                 }
                 break;
             case ACTIVE:
-                // Case handled by PurgeHandler & countdown
+                // Handled automatically by PurgeHandler
                 break;
         }
     }

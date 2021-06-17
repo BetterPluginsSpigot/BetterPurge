@@ -35,6 +35,9 @@ purge_end_countdown: {purge_end_countdown}
 # Shown when the purge ends
 purge_ended: {purge_ended}
 
+# Sent when a player has no permission to execute a command
+no_permission: {no_permission}
+
 # When the purge is active, only one player can view a chest, brewing stand, hopper, etc. at a time
 # This message is displayed when a second player tries to open an opened inventory
 container_already_open: {container_already_open}

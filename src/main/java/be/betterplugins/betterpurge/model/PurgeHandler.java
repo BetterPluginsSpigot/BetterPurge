@@ -138,7 +138,7 @@ public class PurgeHandler
             minutes,
             (int remainingMinutes) ->
             {
-                if (remainingMinutes <= 5)
+                if (remainingMinutes <= purgeConfig.getNumStopWarnings())
                 {
                     logger.log(Level.FINEST,"Almost disabling the purge, but not yet");
                     List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
@@ -150,7 +150,7 @@ public class PurgeHandler
                 }
                 else
                 {
-                    logger.log(Level.FINEST,"The purge has more than 5 minutes remaining");
+                    logger.log(Level.FINEST,"The purge has more than " + purgeConfig.getNumStopWarnings() + " minutes remaining");
                 }
             },
             (int zero) ->

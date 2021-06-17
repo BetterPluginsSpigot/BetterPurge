@@ -14,6 +14,9 @@ public class PurgeConfiguration {
     private final PurgeTime startTime;
     private final int duration;
 
+    private final int numStartWarnings;
+    private final int numStopWarnings;
+
     private final boolean handleContainers;
     private final boolean overwriteSafezonePvp;
     private final boolean handlePVP;
@@ -28,9 +31,11 @@ public class PurgeConfiguration {
         // Read all settings from the config file
         String startTime    = config.getString("start");
         int duration        = config.getInt("duration");
+        this.numStartWarnings = Math.max(0, config.getInt("num_start_warnings"));
+        this.numStopWarnings = Math.max(0, config.getInt("num_stop_warnings"));
         this.handleContainers       = config.getBoolean("enable_chests");
         this.overwriteSafezonePvp   = config.getBoolean("overwrite_safezone");
-        this.handlePVP              = config.getBoolean("enable_pvp");
+        this.handlePVP              = config.getBoolean("handle_pvp");
 
         logger.log(Level.CONFIG, "Start time: " + startTime);
         logger.log(Level.CONFIG, "Handle containers? " + handleContainers);
@@ -87,5 +92,15 @@ public class PurgeConfiguration {
     public boolean shouldHandlePVP()
     {
         return handlePVP;
+    }
+
+    public int getNumStartWarnings()
+    {
+        return numStartWarnings;
+    }
+
+    public int getNumStopWarnings()
+    {
+        return numStopWarnings;
     }
 }

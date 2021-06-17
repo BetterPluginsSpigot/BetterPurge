@@ -4,6 +4,8 @@ duration: 12
 enable_pvp: true
 enable_chests: true
 overwrite_safezone: false
+num_start_warnings: 5
+num_stop_warnings: 3
 enabled_days:
   monday: true
   tuesday: true
