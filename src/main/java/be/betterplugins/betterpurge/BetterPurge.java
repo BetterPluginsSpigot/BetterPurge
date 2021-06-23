@@ -90,6 +90,8 @@ public class BetterPurge extends JavaPlugin
         // Initialise command handler
         CommandHandler commandHandler = new CommandHandler(messenger, logger, purgeHandler, this);
         this.getCommand("betterpurge").setExecutor( commandHandler );
+
+        MetricsHandler metricsHandler = new MetricsHandler(this, config);
     }
 
 

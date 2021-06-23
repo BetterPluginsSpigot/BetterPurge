@@ -17,8 +17,8 @@ public class Messenger {
     private final Map<String, String> messages;     // Contains the messages in lang.yml by mapping path to value
     private final boolean doShortenPrefix;          // Whether or not the short prefix variant is to be used
 
-    private final String shortPrefix = "&9[BP] &3";
-    private final String longPrefix = "&9[BetterPurge] &3";
+    private final String shortPrefix = "&4[BP] &6";
+    private final String longPrefix = "&4[BetterPurge] &6";
 
     private final BPLogger logger;
 

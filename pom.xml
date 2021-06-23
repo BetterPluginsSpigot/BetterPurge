@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.github.BetterPluginsSpigot</groupId>
             <artifactId>BetterYaml</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
         </dependency>
 
         <!-- MockBukkit -->
@@ -68,6 +68,14 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>3.7.7</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- bStats -->
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>2.2.1</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>
@@ -93,10 +101,15 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
                 <configuration>
+                    <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>be.dezijwegel.betteryaml</pattern>
-                            <shadedPattern>be.betterplugins.betterpurge</shadedPattern>
+                            <shadedPattern>be.betterplugins.betterpurge.shade.betteryaml</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>be.betterplugins.betterpurge.shade.bstats</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>

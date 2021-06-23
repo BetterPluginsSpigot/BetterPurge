@@ -27,7 +27,7 @@ purge_force_stop: {purge_force_stop}
 purge_start_countdown: {purge_start_countdown}
 
 # Shown on-screen when the last 10 seconds are being counted down
-seconds_countdown: "{seconds_countdown}"
+seconds_countdown: {seconds_countdown}
 
 # This message is sent every minute, 5 minutes before the purge ends
 purge_end_countdown: {purge_end_countdown}
@@ -53,6 +53,8 @@ help_intro: {help_intro}
 help_status: {help_status}
 help_reload: {help_reload}
 help_start: {help_start}
+help_stop: {help_stop}
+help_loglevel: {help_loglevel}
 
 # These messages are shown when a player requests information about the purge
 status_purge_today: {status_purge_today}
